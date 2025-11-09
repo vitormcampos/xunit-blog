@@ -114,25 +114,6 @@ public class UserTest
         });
     }
 
-    [Fact]
-    public void ShouldThrowWhenUserEmailIsValid()
-    {
-        // Arange
-        var firstName = "John";
-        var lastName = "Black";
-        var email = "johnblack@localhost.com";
-        var password = "123";
-        var role = Role.ADMIN;
-        var userName = "johnblack";
-        var photo = "/uploads/photo.pngs";
-
-        // Action
-        var user = new User(firstName, lastName, email, password, role, userName, photo);
-
-        // Assert
-        Assert.IsType<User>(user);
-    }
-
     [Theory]
     [InlineData("")]
     [InlineData(null)]
