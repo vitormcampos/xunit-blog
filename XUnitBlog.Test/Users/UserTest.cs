@@ -1,7 +1,7 @@
 ﻿using XUnitBlog.Domain.Entities;
 using XUnitBlog.Test.Builders;
 
-namespace XUnitBlog.Test;
+namespace XUnitBlog.Test.Users;
 
 public class UserTest
 {
