@@ -1,0 +1,57 @@
+﻿@page
+@using XUnitBlog.Domain.Entities
+@model XUnitBlog.App.Pages.Admin.Users.NewModel
+
+
+<form method="post" enctype="multipart/form-data">
+    <fieldset class="uk-fieldset">
+
+        <legend class="uk-legend">Novo usuário</legend>
+
+        <div class="uk-margin">
+            <label asp-for="FirstName">Nome</label>
+            <input class="uk-input" type="text" asp-for="FirstName">
+        </div>
+
+        <div class="uk-margin">
+            <label asp-for="LastName">Sobrenome</label>
+            <input class="uk-input" type="text" asp-for="LastName">
+        </div>
+
+        <div class="uk-margin">
+            <label asp-for="Email">Email</label>
+            <input class="uk-input" type="email" asp-for="Email">
+        </div>
+
+        <div class="uk-margin">
+            <label asp-for="Role">Permissão</label>
+            <select class="uk-select" asp-for="Role">
+                <option value="@Role.ADMIN">Admin</option>
+                <option value="@Role.EDITOR">Editor</option> 
+            </select>
+        </div>
+
+        <div class="uk-margin">
+            <label asp-for="UserName">Usuario (nome de indentificação)</label>
+            <input class="uk-input" type="text" asp-for="UserName">
+        </div>
+
+        <div class="uk-margin">
+            <label asp-for="Password">Senha</label>
+            <input class="uk-input" type="password" asp-for="Password">
+        </div>
+
+        <div class="uk-margin">
+            <label asp-for="ConfirmPassword">Confirme a senha</label>
+            <input class="uk-input" type="password" asp-for="ConfirmPassword">
+        </div>
+
+        <div class="uk-margin">
+            <label asp-for="Photo">Email</label>
+            <input class="uk-input" type="file" asp-for="Photo">
+        </div>
+
+        <button class="uk-button uk-button-primary" type="submit">Criar usuário</button>
+          
+    </fieldset>
+</form>

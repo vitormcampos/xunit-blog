@@ -1,7 +1,17 @@
+using XUnitBlog.Data.Ioc;
+using XUnitBlog.Domain.Repositories;
+using XUnitBlog.Domain.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddRepositories();
+
+builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
@@ -19,8 +29,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+app.UseStaticFiles();
+
+app.MapRazorPages();
 
 app.Run();

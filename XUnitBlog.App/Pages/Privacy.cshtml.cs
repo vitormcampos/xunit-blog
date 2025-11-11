@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace xunit_blog.Pages;
+namespace XUnitBlog.App.Pages;
 
 public class PrivacyModel : PageModel
 {
-    public void OnGet()
-    {
-    }
+    public void OnGet() { }
 }
-
