@@ -2,7 +2,7 @@
 
 namespace XUnitBlog.Domain.Dtos;
 
-public class UserDto
+public class CreateUserDto
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -13,13 +13,23 @@ public class UserDto
     public string UserName { get; set; }
     public string Photo { get; set; }
 
-    public User MapToUser()
+    public User MapToUser(string hashPassword)
     {
         if (!Enum.TryParse<Role>(Role, out var role))
         {
             throw new ArgumentException("Permissão inválida");
         }
 
-        return new User(FirstName, LastName, Email, Password, role, UserName, Photo);
+        if (string.IsNullOrEmpty(Password))
+        {
+            throw new ArgumentException("Senha precisa ser informada");
+        }
+
+        if (Password != ConfirmPassword)
+        {
+            throw new ArgumentException("Senhas não conferem");
+        }
+
+        return new User(FirstName, LastName, Email, hashPassword, role, UserName, Photo);
     }
 }

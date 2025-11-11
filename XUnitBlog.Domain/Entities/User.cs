@@ -4,6 +4,15 @@ namespace XUnitBlog.Domain.Entities;
 
 public class User
 {
+    public long Id { get; private set; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+    public string Email { get; private set; }
+    public string Password { get; private set; }
+    public string UserName { get; private set; }
+    public Role Role { get; private set; }
+    public string Photo { get; private set; }
+
     public User(
         string firstName,
         string lastName,
@@ -48,12 +57,23 @@ public class User
         Photo = photo;
     }
 
-    public long Id { get; private set; }
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
-    public string Email { get; private set; }
-    public string Password { get; private set; }
-    public string UserName { get; private set; }
-    public Role Role { get; private set; }
-    public string Photo { get; private set; }
+    public void WithFirstName(string firstName)
+    {
+        FirstName = firstName;
+    }
+
+    public void WithLastName(string lastName)
+    {
+        LastName = lastName;
+    }
+
+    public void WithPassword(string password)
+    {
+        Password = password;
+    }
+
+    public void WithPhoto(string photo)
+    {
+        Photo = photo;
+    }
 }

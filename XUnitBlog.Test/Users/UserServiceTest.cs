@@ -11,8 +11,9 @@ namespace XUnitBlog.Test.Users;
 public class UserServiceTest
 {
     private readonly Faker _faker;
-    private readonly UserDto _userDto;
+    private readonly CreateUserDto _userDto;
     private readonly Mock<IUserRepository> _repositoryMock;
+    private readonly Mock<IHashService> _hashServiceMock;
     private readonly UserService _userService;
     private readonly User _user;
 
@@ -20,7 +21,7 @@ public class UserServiceTest
     {
         // Arange
         _faker = new Faker();
-        _userDto = new UserDto
+        _userDto = new CreateUserDto
         {
             FirstName = _faker.Person.FirstName,
             LastName = _faker.Person.LastName,
@@ -32,9 +33,12 @@ public class UserServiceTest
         };
 
         _repositoryMock = new Mock<IUserRepository>();
-        _userService = new UserService(_repositoryMock.Object);
+        _hashServiceMock = new Mock<IHashService>();
+        _hashServiceMock.Setup(service => service.CreateHash(_userDto.Password)).Returns("123");
 
-        _user = _userDto.MapToUser();
+        _userService = new UserService(_repositoryMock.Object, _hashServiceMock.Object);
+
+        _user = _userDto.MapToUser("123");
     }
 
     [Fact]
@@ -89,7 +93,7 @@ public class UserServiceTest
     public async Task ShouldThrowsIfUserRoleIsInvalidAsync()
     {
         var invalidRole = "PUBLISHER";
-        var userDto = new UserDto
+        var userDto = new CreateUserDto
         {
             FirstName = _faker.Person.FirstName,
             LastName = _faker.Person.LastName,
@@ -110,5 +114,52 @@ public class UserServiceTest
         await Assert
             .ThrowsAsync<ArgumentException>(assertAction)
             .WithMessageAsync("Permissão inválida");
+    }
+
+    [Fact]
+    public void ShouldThrowsIfPasswordAndConfirmPasswordAreDifferent()
+    {
+        // Arange
+        var userDto = new CreateUserDto
+        {
+            FirstName = _faker.Person.FirstName,
+            LastName = _faker.Person.LastName,
+            Email = _faker.Person.Email,
+            Role = "ADMIN",
+            Password = "1234",
+            ConfirmPassword = "123",
+            UserName = _faker.Person.UserName,
+        };
+
+        // Action
+        var assertAction = () =>
+        {
+            var user = userDto.MapToUser("123");
+        };
+
+        // Assert
+        Assert.Throws<ArgumentException>(assertAction).WithMessage("Senhas não conferem");
+    }
+
+    [Fact]
+    public async Task ShouldUpdateUserAsync()
+    {
+        // Arange
+        var userId = 1;
+        var userDto = new UpdateUserDto
+        {
+            FirstName = _faker.Person.FirstName,
+            LastName = _faker.Person.LastName,
+            Photo = _faker.Person.Avatar,
+        };
+
+        // Action
+        _repositoryMock.Setup(repository => repository.GetUserById(userId)).ReturnsAsync(_user);
+        var updatedUser = await _userService.UpdateAsync(userId, userDto);
+
+        // Assert
+        Assert.Equal(userDto.FirstName, updatedUser.FirstName);
+        Assert.Equal(userDto.LastName, updatedUser.LastName);
+        Assert.Equal(userDto.Photo, updatedUser.Photo);
     }
 }
