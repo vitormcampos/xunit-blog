@@ -1,5 +1,6 @@
 ﻿using XUnitBlog.Domain.Entities;
 using XUnitBlog.Test.Builders;
+using XUnitBlog.Test.Extensions;
 
 namespace XUnitBlog.Test.Users;
 
@@ -20,12 +21,16 @@ public class UserTest
     [InlineData(null)]
     public void ShouldThrowWhenUserFirstNameIsEmpty(string firstName)
     {
-        // Assert
-        Assert.Throws<ArgumentException>(() =>
+        // Action
+        void assertAction()
         {
-            // Action
             var user = UserBuilder.New().WithFirstName(firstName).Build();
-        });
+        }
+
+        // Assert
+        Assert
+            .Throws<ArgumentException>(assertAction)
+            .WithMessage("First name and last name are required");
     }
 
     [Theory]
@@ -33,12 +38,16 @@ public class UserTest
     [InlineData(null)]
     public void ShouldThrowWhenUserLastNameIsEmpty(string lastName)
     {
-        // Assert
-        Assert.Throws<ArgumentException>(() =>
+        // Action
+        void assertAction()
         {
-            // Action
             var user = UserBuilder.New().WithLastName(lastName).Build();
-        });
+        }
+
+        // Assert
+        Assert
+            .Throws<ArgumentException>(assertAction)
+            .WithMessage("First name and last name are required");
     }
 
     [Theory]
@@ -46,12 +55,14 @@ public class UserTest
     [InlineData(null)]
     public void ShouldThrowWhenUserEmailIsEmpty(string email)
     {
-        // Assert
-        Assert.Throws<ArgumentException>(() =>
+        // Action
+        void assertAction()
         {
-            // Action
             var user = UserBuilder.New().WithEmail(email).Build();
-        });
+        }
+
+        // Assert
+        Assert.Throws<ArgumentException>(assertAction).WithMessage("E-mail is required");
     }
 
     [Theory]
@@ -60,12 +71,14 @@ public class UserTest
     [InlineData("olamundo@localhost")]
     public void ShouldThrowWhenUserEmailIsInvalid(string email)
     {
-        // Assert
-        Assert.Throws<ArgumentException>(() =>
+        // Action
+        void assertAction()
         {
-            // Action
             var user = UserBuilder.New().WithEmail(email).Build();
-        });
+        }
+
+        // Assert
+        Assert.Throws<ArgumentException>(assertAction).WithMessage("E-mail format is invalid");
     }
 
     [Theory]
@@ -73,28 +86,29 @@ public class UserTest
     [InlineData(null)]
     public void ShouldThrowWhenUserPasswordIsEmpty(string password)
     {
-        // Assert
-        Assert.Throws<ArgumentException>(() =>
+        // Action
+        void assertAction()
         {
-            // Action
             var user = UserBuilder.New().WithPassword(password).Build();
-        });
-    }
+        }
 
-    [Fact(Skip = "Implement a check to see if the password is a hash.")]
-    public void ShouldHashPassword() { }
+        // Assert
+        Assert.Throws<ArgumentException>(assertAction).WithMessage("Password is required");
+    }
 
     [Theory]
     [InlineData("")]
     [InlineData(null)]
     public void ShouldThrowWhenUserUsernameIsEmpty(string userName)
     {
-        // Assert
-        Assert.Throws<ArgumentException>(() =>
+        // Action
+        void assertAction()
         {
-            // Action
             var user = UserBuilder.New().WithUserName(userName).Build();
-        });
+        }
+
+        // Assert
+        Assert.Throws<ArgumentException>(assertAction);
     }
 
     [Fact(Skip = "Implement a check to see if the password is a valid format.")]

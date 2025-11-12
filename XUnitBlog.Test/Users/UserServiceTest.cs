@@ -47,7 +47,7 @@ public class UserServiceTest
     }
 
     [Fact]
-    public async Task ShouldAddUserOnRepositoryAsync()
+    public async Task ShouldAddUserOnRepository()
     {
         // Arrange
         _hashServiceMock.Setup(service => service.CreateHash(_userDto.Password)).Returns("123");
@@ -100,7 +100,7 @@ public class UserServiceTest
     }
 
     [Fact]
-    public async Task ShouldThrowsIfUserRoleIsInvalidAsync()
+    public async Task ShouldThrowsIfUserRoleIsInvalid()
     {
         var invalidRole = "PUBLISHER";
         var userDto = new CreateUserDto
@@ -142,17 +142,17 @@ public class UserServiceTest
         };
 
         // Action
-        var assertAction = () =>
+        void assertAction()
         {
             var user = userDto.MapToUser("123");
-        };
+        }
 
         // Assert
         Assert.Throws<ArgumentException>(assertAction).WithMessage("Senhas não conferem");
     }
 
     [Fact]
-    public async Task ShouldUpdateUserAsync()
+    public async Task ShouldUpdateUser()
     {
         // Arange
         var userId = 1;
@@ -222,15 +222,15 @@ public class UserServiceTest
             .Returns(true);
 
         // Action
-        var actionAssert = async () =>
+        async Task actionAssert()
         {
             var userToken = await _userService.Authenticate(_user.Email, userPassword);
-        };
+        }
 
         // Assert
-        (await Assert.ThrowsAsync<Exception>(actionAssert)).WithMessage(
-            "Usuário ou senha inválido"
-        );
+        await Assert
+            .ThrowsAsync<Exception>(actionAssert)
+            .WithMessageAsync("Usuário ou senha inválido");
     }
 
     [Fact]
@@ -248,14 +248,14 @@ public class UserServiceTest
             .Returns(false);
 
         // Action
-        var actionAssert = async () =>
+        async Task actionAssert()
         {
             var userToken = await _userService.Authenticate(_user.Email, userPassword);
-        };
+        }
 
         // Assert
-        (await Assert.ThrowsAsync<Exception>(actionAssert)).WithMessage(
-            "Usuário ou senha inválido"
-        );
+        await Assert
+            .ThrowsAsync<Exception>(actionAssert)
+            .WithMessageAsync("Usuário ou senha inválido");
     }
 }
