@@ -1,4 +1,28 @@
 ﻿@page
 @model XUnitBlog.App.Pages.Admin.Users.IndexModel
-@{
-}
+
+<div class="uk-container uk-margin">
+
+    <h2>Usuários</h2>
+
+    <table class="uk-table uk-table-hover uk-table-divider">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

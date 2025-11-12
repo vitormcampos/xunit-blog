@@ -47,5 +47,7 @@ public class NewModel(UserService userService) : PageModel
         };
 
         await userService.AddAsync(userDto);
+
+        Response.Redirect("/admin/users");
     }
 }

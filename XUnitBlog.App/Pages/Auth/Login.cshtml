@@ -1,0 +1,25 @@
+﻿@page
+@model XUnitBlog.App.Pages.Auth.LoginModel
+
+@User.Identity.IsAuthenticated
+
+<div class="uk-container uk-flex uk-flex-center uk-margin-large-top">
+    <form method="post">
+        <h2>Acessar sua conta</h2>
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon" uk-icon="icon: user"></span>
+                <input class="uk-input" type="text" aria-label="Not clickable icon" asp-for="Email" required>
+            </div>
+        </div>
+
+        <div class="uk-margin">
+            <div class="uk-inline">
+                <span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
+                <input class="uk-input" type="password" aria-label="Not clickable icon" asp-for="Password" required>
+            </div>
+        </div>
+
+        <button class="uk-button uk-width-1-1" type="submit">Entrar</button>
+    </form>
+</div>

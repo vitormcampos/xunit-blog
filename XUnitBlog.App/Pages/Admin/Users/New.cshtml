@@ -2,56 +2,61 @@
 @using XUnitBlog.Domain.Entities
 @model XUnitBlog.App.Pages.Admin.Users.NewModel
 
+<div class="uk-container uk-flex uk-flex-center uk-margin-top">
+    <form method="post" enctype="multipart/form-data">
+        <fieldset class="uk-fieldset">
 
-<form method="post" enctype="multipart/form-data">
-    <fieldset class="uk-fieldset">
+            <legend class="uk-legend uk-margin">Novo usuário</legend>
+            <div class="uk-child-width-1-2@@m" uk-grid>
+                <div>
+                    <label asp-for="FirstName">Nome</label>
+                    <input class="uk-input" type="text" asp-for="FirstName">
+                </div>
+                <div>
+                    <label asp-for="LastName">Sobrenome</label>
+                    <input class="uk-input" type="text" asp-for="LastName">
+                </div>
+            </div>
 
-        <legend class="uk-legend">Novo usuário</legend>
+            <div class="uk-margin">
+                <label asp-for="Email">Email</label>
+                <input class="uk-input" type="email" asp-for="Email">
+            </div>
 
-        <div class="uk-margin">
-            <label asp-for="FirstName">Nome</label>
-            <input class="uk-input" type="text" asp-for="FirstName">
-        </div>
+            <div class="uk-child-width-1-2@@m" uk-grid>
+                <div>
+                    <label asp-for="UserName">Usuario (nome de indentificação)</label>
+                    <input class="uk-input" type="text" asp-for="UserName">
+                </div>
+                <div>
+                    <label asp-for="Role">Permissão</label>
+                    <select class="uk-select" asp-for="Role">
+                        <option value="@Role.ADMIN">Admin</option>
+                        <option value="@Role.EDITOR">Editor</option>
+                    </select>
+                </div>
+            </div>
 
-        <div class="uk-margin">
-            <label asp-for="LastName">Sobrenome</label>
-            <input class="uk-input" type="text" asp-for="LastName">
-        </div>
+            <div class="uk-child-width-1-2@@m" uk-grid>
+                <div>
+                    <label asp-for="Password">Senha</label>
+                    <input class="uk-input" type="password" asp-for="Password">
+                </div>
+                <div>
+                    <label asp-for="ConfirmPassword">Confirme a senha</label>
+                    <input class="uk-input" type="password" asp-for="ConfirmPassword">
+                </div>
+            </div>
 
-        <div class="uk-margin">
-            <label asp-for="Email">Email</label>
-            <input class="uk-input" type="email" asp-for="Email">
-        </div>
-
-        <div class="uk-margin">
-            <label asp-for="Role">Permissão</label>
-            <select class="uk-select" asp-for="Role">
-                <option value="@Role.ADMIN">Admin</option>
-                <option value="@Role.EDITOR">Editor</option> 
-            </select>
-        </div>
-
-        <div class="uk-margin">
-            <label asp-for="UserName">Usuario (nome de indentificação)</label>
-            <input class="uk-input" type="text" asp-for="UserName">
-        </div>
-
-        <div class="uk-margin">
-            <label asp-for="Password">Senha</label>
-            <input class="uk-input" type="password" asp-for="Password">
-        </div>
-
-        <div class="uk-margin">
-            <label asp-for="ConfirmPassword">Confirme a senha</label>
-            <input class="uk-input" type="password" asp-for="ConfirmPassword">
-        </div>
-
-        <div class="uk-margin">
-            <label asp-for="Photo">Email</label>
-            <input class="uk-input" type="file" asp-for="Photo">
-        </div>
+            <div class="uk-margin" uk-margin>
+                <div uk-form-custom="target: true">
+                    <input type="file" aria-label="Selecione a foto de perfil" asp-for="Photo">
+                    <input class="uk-input uk-form-width-medium" type="text"
+                           placeholder="Selecione a foto de perfil" aria-label="Selecione a foto de perfil" disabled>
+                </div>
+            </div>
+        </fieldset>
 
         <button class="uk-button uk-button-primary" type="submit">Criar usuário</button>
-          
-    </fieldset>
-</form>
+    </form>
+</div>
