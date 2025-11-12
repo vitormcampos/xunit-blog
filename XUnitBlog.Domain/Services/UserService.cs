@@ -1,10 +1,15 @@
-﻿using XUnitBlog.Domain.Dtos;
+﻿using System.Threading.Tasks;
+using XUnitBlog.Domain.Dtos;
 using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Repositories;
 
 namespace XUnitBlog.Domain.Services;
 
-public class UserService(IUserRepository repository, IHashService hashService)
+public class UserService(
+    IUserRepository repository,
+    IHashService hashService,
+    IJwtService jwtService
+)
 {
     public async Task AddAsync(CreateUserDto userDto)
     {
@@ -54,5 +59,24 @@ public class UserService(IUserRepository repository, IHashService hashService)
         await repository.UpdateAsync(user);
 
         return user;
+    }
+
+    public async Task<IList<User>> GetAll()
+    {
+        return await repository.GetAll();
+    }
+
+    public async Task<string> Authenticate(string email, string password)
+    {
+        var userExists = await repository.GetUserByEmail(email);
+        var passwordCheck = hashService.CompareHash(password, userExists?.Password ?? "");
+        if (userExists is null || !passwordCheck)
+        {
+            throw new Exception("Usuário ou senha inválido");
+        }
+
+        var token = jwtService.GenerateJwtToken(userExists);
+
+        return token;
     }
 }

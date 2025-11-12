@@ -12,6 +12,11 @@ internal class UserRepository(BlogContext blogContext) : IUserRepository
         await blogContext.SaveChangesAsync();
     }
 
+    public async Task<IList<User>> GetAll()
+    {
+        return await blogContext.Users.AsNoTracking().ToListAsync();
+    }
+
     public async Task<User?> GetUserByEmail(string email)
     {
         return await blogContext.Users.FirstOrDefaultAsync(u => u.Email == email);
