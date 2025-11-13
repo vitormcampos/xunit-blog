@@ -9,28 +9,28 @@
             <legend class="uk-legend uk-margin">Novo usuário</legend>
             <div class="uk-child-width-1-2@@m" uk-grid>
                 <div>
-                    <label asp-for="FirstName">Nome</label>
-                    <input class="uk-input" type="text" asp-for="FirstName">
+                    <label asp-for="CreateUser.FirstName">Nome</label>
+                    <input class="uk-input" type="text" asp-for="CreateUser.FirstName">
                 </div>
                 <div>
-                    <label asp-for="LastName">Sobrenome</label>
-                    <input class="uk-input" type="text" asp-for="LastName">
+                    <label asp-for="CreateUser.LastName">Sobrenome</label>
+                    <input class="uk-input" type="text" asp-for="CreateUser.LastName">
                 </div>
             </div>
 
             <div class="uk-margin">
-                <label asp-for="Email">Email</label>
-                <input class="uk-input" type="email" asp-for="Email">
+                <label asp-for="CreateUser.Email">Email</label>
+                <input class="uk-input" type="email" asp-for="CreateUser.Email">
             </div>
 
             <div class="uk-child-width-1-2@@m" uk-grid>
                 <div>
-                    <label asp-for="UserName">Usuario (nome de indentificação)</label>
-                    <input class="uk-input" type="text" asp-for="UserName">
+                    <label asp-for="CreateUser.UserName">Usuario (nome de indentificação)</label>
+                    <input class="uk-input" type="text" asp-for="CreateUser.UserName">
                 </div>
                 <div>
-                    <label asp-for="Role">Permissão</label>
-                    <select class="uk-select" asp-for="Role">
+                    <label asp-for="CreateUser.Role">Permissão</label>
+                    <select class="uk-select" asp-for="CreateUser.Role">
                         <option value="@Role.ADMIN">Admin</option>
                         <option value="@Role.EDITOR">Editor</option>
                     </select>
@@ -39,18 +39,18 @@
 
             <div class="uk-child-width-1-2@@m" uk-grid>
                 <div>
-                    <label asp-for="Password">Senha</label>
-                    <input class="uk-input" type="password" asp-for="Password">
+                    <label asp-for="CreateUser.Password">Senha</label>
+                    <input class="uk-input" type="password" asp-for="CreateUser.Password">
                 </div>
                 <div>
-                    <label asp-for="ConfirmPassword">Confirme a senha</label>
-                    <input class="uk-input" type="password" asp-for="ConfirmPassword">
+                    <label asp-for="CreateUser.ConfirmPassword">Confirme a senha</label>
+                    <input class="uk-input" type="password" asp-for="CreateUser.ConfirmPassword">
                 </div>
             </div>
 
             <div class="uk-margin" uk-margin>
                 <div uk-form-custom="target: true">
-                    <input type="file" aria-label="Selecione a foto de perfil" asp-for="Photo">
+                    <input type="file" aria-label="Selecione a foto de perfil" asp-for="CreateUser.Photo">
                     <input class="uk-input uk-form-width-medium" type="text"
                            placeholder="Selecione a foto de perfil" aria-label="Selecione a foto de perfil" disabled>
                 </div>
