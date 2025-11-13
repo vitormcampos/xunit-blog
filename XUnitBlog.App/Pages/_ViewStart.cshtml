@@ -1,3 +1,4 @@
-﻿@{
-    Layout = "_Layout";
+﻿@using XUnitBlog.Domain.Entities
+@{
+    Layout = User.IsInRole(Role.ADMIN.ToString()) ? "_AdminLayout" :  "_Layout";
 }
