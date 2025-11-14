@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using XUnitBlog.Domain.Services;
@@ -7,22 +8,21 @@ namespace XUnitBlog.App.Pages.Auth;
 public class LoginModel(UserService userService) : PageModel
 {
     [BindProperty]
+    [Required]
+    [EmailAddress]
     public string Email { get; set; }
 
     [BindProperty]
+    [Required]
     public string Password { get; set; }
 
     public void OnGet() { }
 
-    public async Task OnPost()
+    public async Task<IActionResult> OnPost()
     {
-        if (string.IsNullOrEmpty(Email))
+        if (!ModelState.IsValid)
         {
-            return;
-        }
-        if (string.IsNullOrEmpty(Password))
-        {
-            return;
+            return Page();
         }
 
         var token = await userService.Authenticate(Email, Password);
@@ -37,5 +37,7 @@ public class LoginModel(UserService userService) : PageModel
                 Expires = DateTime.UtcNow.AddHours(1),
             }
         );
+
+        return RedirectToPage("/Index");
     }
 }
