@@ -1,4 +1,5 @@
 ﻿using XUnitBlog.Domain.Entities;
+using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Test.Builders;
 using XUnitBlog.Test.Extensions;
 
@@ -28,9 +29,7 @@ public class UserTest
         }
 
         // Assert
-        Assert
-            .Throws<ArgumentException>(assertAction)
-            .WithMessage("First name and last name are required");
+        Assert.Throws<DomainModelException>(assertAction).WithMessage("First name is required");
     }
 
     [Theory]
@@ -45,9 +44,7 @@ public class UserTest
         }
 
         // Assert
-        Assert
-            .Throws<ArgumentException>(assertAction)
-            .WithMessage("First name and last name are required");
+        Assert.Throws<DomainModelException>(assertAction).WithMessage("Last name is required");
     }
 
     [Theory]
@@ -62,7 +59,7 @@ public class UserTest
         }
 
         // Assert
-        Assert.Throws<ArgumentException>(assertAction).WithMessage("E-mail is required");
+        Assert.Throws<DomainModelException>(assertAction).WithMessage("E-mail format is invalid");
     }
 
     [Theory]
@@ -78,7 +75,7 @@ public class UserTest
         }
 
         // Assert
-        Assert.Throws<ArgumentException>(assertAction).WithMessage("E-mail format is invalid");
+        Assert.Throws<DomainModelException>(assertAction).WithMessage("E-mail format is invalid");
     }
 
     [Theory]
@@ -93,7 +90,7 @@ public class UserTest
         }
 
         // Assert
-        Assert.Throws<ArgumentException>(assertAction).WithMessage("Password is required");
+        Assert.Throws<DomainModelException>(assertAction).WithMessage("Password is required");
     }
 
     [Theory]
@@ -108,7 +105,7 @@ public class UserTest
         }
 
         // Assert
-        Assert.Throws<ArgumentException>(assertAction);
+        Assert.Throws<DomainModelException>(assertAction);
     }
 
     [Fact(Skip = "Implement a check to see if the password is a valid format.")]

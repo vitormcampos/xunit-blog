@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System.Runtime.Intrinsics.Arm;
+using System.Threading.Tasks;
 using XUnitBlog.Domain.Dtos;
 using XUnitBlog.Domain.Entities;
+using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Domain.Repositories;
 
 namespace XUnitBlog.Domain.Services;
@@ -20,13 +22,13 @@ public class UserService(
         var userEmailExists = await repository.GetUserByEmail(user.Email);
         if (userEmailExists is not null)
         {
-            throw new Exception("Endereço de e-mail já utilizado");
+            throw new DomainServiceException("Endereço de e-mail já utilizado");
         }
 
         var userNameExists = await repository.GetUserByUserName(user.UserName);
         if (userNameExists is not null)
         {
-            throw new Exception("Nome de usuário já utilizado");
+            throw new DomainServiceException("Nome de usuário já utilizado");
         }
 
         await repository.AddAsync(user);
@@ -38,22 +40,22 @@ public class UserService(
 
         if (user is null)
         {
-            throw new ArgumentException("Usuário não encontrado");
+            throw new DomainServiceException("Usuário não encontrado");
         }
 
         if (userDto.FirstName != user.FirstName)
         {
-            user.WithFirstName(userDto.FirstName);
+            user.SetFirstName(userDto.FirstName);
         }
 
         if (userDto.LastName != user.LastName)
         {
-            user.WithLastName(userDto.LastName);
+            user.SetLastName(userDto.LastName);
         }
 
         if (userDto.Photo != user.Photo)
         {
-            user.WithPhoto(userDto.Photo);
+            user.SetPhoto(userDto.Photo);
         }
 
         await repository.UpdateAsync(user);
@@ -72,7 +74,7 @@ public class UserService(
         var passwordCheck = hashService.CompareHash(password, userExists?.Password ?? "");
         if (userExists is null || !passwordCheck)
         {
-            throw new Exception("Usuário ou senha inválido");
+            throw new DomainServiceException("Usuário ou senha inválido");
         }
 
         var token = jwtService.GenerateJwtToken(userExists);

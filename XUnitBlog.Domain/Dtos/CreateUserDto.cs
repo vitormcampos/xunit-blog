@@ -1,4 +1,5 @@
 ﻿using XUnitBlog.Domain.Entities;
+using XUnitBlog.Domain.Exceptions;
 
 namespace XUnitBlog.Domain.Dtos;
 
@@ -17,17 +18,12 @@ public class CreateUserDto
     {
         if (!Enum.TryParse<Role>(Role, out var role))
         {
-            throw new ArgumentException("Permissão inválida");
-        }
-
-        if (string.IsNullOrEmpty(Password))
-        {
-            throw new ArgumentException("Senha precisa ser informada");
+            throw new DomainServiceException("Permissão inválida");
         }
 
         if (Password != ConfirmPassword)
         {
-            throw new ArgumentException("Senhas não conferem");
+            throw new DomainServiceException("Senhas não conferem");
         }
 
         return new User(FirstName, LastName, Email, hashPassword, role, UserName, Photo);

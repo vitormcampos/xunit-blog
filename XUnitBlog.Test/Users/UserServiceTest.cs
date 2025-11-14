@@ -2,6 +2,7 @@
 using Moq;
 using XUnitBlog.Domain.Dtos;
 using XUnitBlog.Domain.Entities;
+using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Domain.Repositories;
 using XUnitBlog.Domain.Services;
 using XUnitBlog.Test.Extensions;
@@ -75,7 +76,7 @@ public class UserServiceTest
 
         // Assert
         await Assert
-            .ThrowsAsync<Exception>(assertAction)
+            .ThrowsAsync<DomainServiceException>(assertAction)
             .WithMessageAsync("Endereço de e-mail já utilizado");
     }
 
@@ -83,9 +84,9 @@ public class UserServiceTest
     public async Task ShouldThrowsIfUserNameExists()
     {
         // Arrange
-        var alreadyUsernameEmail = _userDto.UserName;
+        var alreadyUsername = _user.UserName;
         _hashServiceMock.Setup(service => service.CreateHash(_userDto.Password)).Returns("123");
-        _repositoryMock.Setup(r => r.GetUserByUserName(alreadyUsernameEmail)).ReturnsAsync(_user);
+        _repositoryMock.Setup(r => r.GetUserByUserName(alreadyUsername)).ReturnsAsync(_user);
 
         // Action
         async Task assertAction()
@@ -95,7 +96,7 @@ public class UserServiceTest
 
         // Assert
         await Assert
-            .ThrowsAsync<Exception>(assertAction)
+            .ThrowsAsync<DomainServiceException>(assertAction)
             .WithMessageAsync("Nome de usuário já utilizado");
     }
 
@@ -122,7 +123,7 @@ public class UserServiceTest
 
         // Assert
         await Assert
-            .ThrowsAsync<ArgumentException>(assertAction)
+            .ThrowsAsync<DomainServiceException>(assertAction)
             .WithMessageAsync("Permissão inválida");
     }
 
@@ -148,7 +149,7 @@ public class UserServiceTest
         }
 
         // Assert
-        Assert.Throws<ArgumentException>(assertAction).WithMessage("Senhas não conferem");
+        Assert.Throws<DomainServiceException>(assertAction).WithMessage("Senhas não conferem");
     }
 
     [Fact]
@@ -171,6 +172,60 @@ public class UserServiceTest
         Assert.Equal(userDto.FirstName, updatedUser.FirstName);
         Assert.Equal(userDto.LastName, updatedUser.LastName);
         Assert.Equal(userDto.Photo, updatedUser.Photo);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public async Task ShouldThrowIfUpdatingUserWithInvalidFirstName(string firstName)
+    {
+        // Arrange
+        var userId = 1;
+        var userDto = new UpdateUserDto
+        {
+            FirstName = firstName,
+            LastName = _faker.Person.LastName,
+            Photo = _faker.Person.Avatar,
+        };
+
+        // Action
+        async Task actionAssert()
+        {
+            _repositoryMock.Setup(repository => repository.GetUserById(userId)).ReturnsAsync(_user);
+            await _userService.UpdateAsync(userId, userDto);
+        }
+
+        // Assert
+        await Assert
+            .ThrowsAsync<DomainModelException>(actionAssert)
+            .WithMessageAsync("First name is required");
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public async Task ShouldThrowIfUpdatingUserWithInvalidLastName(string lastName)
+    {
+        // Arrange
+        var userId = 1;
+        var userDto = new UpdateUserDto
+        {
+            FirstName = _faker.Person.FirstName,
+            LastName = lastName,
+            Photo = _faker.Person.Avatar,
+        };
+
+        // Action
+        async Task actionAssert()
+        {
+            _repositoryMock.Setup(repository => repository.GetUserById(userId)).ReturnsAsync(_user);
+            await _userService.UpdateAsync(userId, userDto);
+        }
+
+        // Assert
+        await Assert
+            .ThrowsAsync<DomainModelException>(actionAssert)
+            .WithMessageAsync("Last name is required");
     }
 
     [Fact]
@@ -229,7 +284,7 @@ public class UserServiceTest
 
         // Assert
         await Assert
-            .ThrowsAsync<Exception>(actionAssert)
+            .ThrowsAsync<DomainServiceException>(actionAssert)
             .WithMessageAsync("Usuário ou senha inválido");
     }
 
@@ -255,7 +310,7 @@ public class UserServiceTest
 
         // Assert
         await Assert
-            .ThrowsAsync<Exception>(actionAssert)
+            .ThrowsAsync<DomainServiceException>(actionAssert)
             .WithMessageAsync("Usuário ou senha inválido");
     }
 }

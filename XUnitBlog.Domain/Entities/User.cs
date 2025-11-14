@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using XUnitBlog.Domain.Exceptions;
 
 namespace XUnitBlog.Domain.Entities;
 
@@ -23,57 +24,71 @@ public class User
         string photo
     )
     {
-        if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
+        SetFirstName(firstName);
+        SetLastName(lastName);
+        SetPassword(password);
+        SetEmail(email);
+        SetUserName(userName);
+
+        Role = role;
+        Photo = photo;
+    }
+
+    public void SetFirstName(string firstName)
+    {
+        if (string.IsNullOrEmpty(firstName))
         {
-            throw new ArgumentException("First name and last name are required");
+            throw new DomainModelException("First name is required");
         }
 
-        if (string.IsNullOrEmpty(email))
+        FirstName = firstName;
+    }
+
+    public void SetLastName(string lastName)
+    {
+        if (string.IsNullOrEmpty(lastName))
         {
-            throw new ArgumentException("E-mail is required");
+            throw new DomainModelException("Last name is required");
         }
 
-        if (!Regex.Match(email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").Success)
-        {
-            throw new ArgumentException("E-mail format is invalid");
-        }
+        LastName = lastName;
+    }
 
+    public void SetPhoto(string photo)
+    {
+        Photo = photo;
+    }
+
+    private void SetPassword(string password)
+    {
         if (string.IsNullOrEmpty(password))
         {
-            throw new ArgumentException("Password is required");
+            throw new DomainModelException("Password is required");
         }
 
+        Password = password;
+    }
+
+    private void SetEmail(string email)
+    {
+        if (
+            string.IsNullOrEmpty(email)
+            || !Regex.Match(email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$").Success
+        )
+        {
+            throw new DomainModelException("E-mail format is invalid");
+        }
+
+        Email = email;
+    }
+
+    private void SetUserName(string userName)
+    {
         if (string.IsNullOrEmpty(userName))
         {
-            throw new ArgumentException("Username is required");
+            throw new DomainModelException("Username is required");
         }
 
-        FirstName = firstName;
-        LastName = lastName;
-        Email = email;
-        Password = password;
-        Role = role;
-        UserName = userName;
-        Photo = photo;
-    }
-
-    public void WithFirstName(string firstName)
-    {
-        FirstName = firstName;
-    }
-
-    public void WithLastName(string lastName)
-    {
-        LastName = lastName;
-    }
-
-    public void WithPassword(string password)
-    {
-        Password = password;
-    }
-
-    public void WithPhoto(string photo)
-    {
-        Photo = photo;
+        UserName = userName.ToLower();
     }
 }
