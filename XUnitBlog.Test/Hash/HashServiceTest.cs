@@ -1,4 +1,5 @@
 ﻿using XUnitBlog.Domain.Services;
+using XUnitBlog.Test.Extensions;
 
 namespace XUnitBlog.Test.Hash;
 
@@ -14,6 +15,21 @@ public class HashServiceTest
         var output = hashService.CreateHash(input);
 
         Assert.NotEmpty(output);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
+    public void ShouldThrowsIfInputStringIsInvalid(string input)
+    {
+        var hashService = new HashService();
+
+        void assertAction()
+        {
+            var output = hashService.CreateHash(input);
+        }
+
+        Assert.Throws<ArgumentException>(assertAction).WithMessage("The input cannot be empty");
     }
 
     [Theory]

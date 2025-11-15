@@ -8,7 +8,7 @@ public class HashService : IHashService
     public string CreateHash(string input)
     {
         if (string.IsNullOrEmpty(input))
-            throw new ArgumentException("O texto não pode ser nulo ou vazio.", nameof(input));
+            throw new ArgumentException("The input cannot be empty");
 
         using (var sha512 = SHA512.Create())
         {

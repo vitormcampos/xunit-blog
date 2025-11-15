@@ -14,6 +14,8 @@ public class User
     public Role Role { get; private set; }
     public string Photo { get; private set; }
 
+    private User() { }
+
     public User(
         string firstName,
         string lastName,
