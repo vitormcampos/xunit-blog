@@ -14,6 +14,11 @@ public static class AssertExtensions
         Assert.Equal(message, exception.Message);
     }
 
+    public static void WithMessage(this ArgumentException exception, string message)
+    {
+        Assert.Equal(message, exception.Message);
+    }
+
     public static async Task WithMessageAsync(
         this Task<DomainModelException> exception,
         string message
