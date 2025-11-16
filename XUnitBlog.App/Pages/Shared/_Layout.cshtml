@@ -19,9 +19,9 @@
 <body>
     <header>
         <nav class="uk-navbar-container">
-            <div class="uk-container">
-                <div uk-navbar>
-                    <div class="uk-navbar-left">
+            <div class="uk-padding-large uk-padding-remove-vertical">
+                <div uk-navbar uk-grid>
+                    <div class="uk-width-auto">
                         <ul class="uk-navbar-nav">
                             <li class="uk-active"><a href="/">Home</a></li>
                             <li>
@@ -34,10 +34,15 @@
                                     </ul>
                                 </div>
                             </li>
-                            <li><a href="#">Item</a></li>
                         </ul>
                     </div>
-                    <div class="uk-navbar-right">
+                    <div class="uk-width-expand uk-flex uk-flex-center uk-flex-middle">
+                        <form class="uk-search uk-search-default uk-width-1-1">
+                            <span uk-search-icon></span>
+                            <input class="uk-search-input" type="search" placeholder="Pesquisar conteúdo" aria-label="Pesquisar conteúdo">
+                        </form>
+                    </div>
+                    <div class="uk-width-auto">
                         <ul class="uk-navbar-nav">
                             @if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == Role.ADMIN.ToString()))
                             {
@@ -57,11 +62,19 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <main class="uk-container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
+    </main>
+    <footer class="uk-flex uk-flex-between uk-flex-middle uk-padding-large uk-padding-remove-vertical">
+        <div>
+            <h3>XUnitBlog</h3>
+        </div>
+        <div>
+            <p>Desenvolvido por @@Vitor Campos</p>
+        </div>
+    </footer>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
 
