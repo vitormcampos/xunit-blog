@@ -1,6 +1,6 @@
 ﻿using Bogus;
-using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Exceptions;
+using XUnitBlog.Test._Builders;
 using XUnitBlog.Test.Extensions;
 
 namespace XUnitBlog.Test.Posts;
@@ -8,34 +8,20 @@ namespace XUnitBlog.Test.Posts;
 public class PostTests
 {
     private readonly Faker _faker;
-    private readonly Post _post;
 
     public PostTests()
     {
         _faker = new Faker();
-        _post = new Post(
-            _faker.Random.Words(2),
-            _faker.Lorem.Sentence(),
-            _faker.Image.PicsumUrl(),
-            1
-        )
-        { };
     }
 
     [Fact]
     public void ShouldCreateAPost()
     {
-        var title = "title";
-        var content = "content";
-        var thumbnail = "";
-        var userId = 1;
+        // Arrange & Action
+        var post = PostBuilder.New().Build();
 
-        var post = new Post(title, content, thumbnail, userId);
-
+        // Assert
         Assert.NotNull(post);
-        Assert.Equal(title, post.Title);
-        Assert.Equal(content, post.Content);
-        Assert.Equal(thumbnail, post.Thumbnail);
     }
 
     [Theory]
@@ -43,15 +29,13 @@ public class PostTests
     [InlineData(null)]
     public void ShouldThrowIfTitleIsInvalid(string title)
     {
-        var content = "content";
-        var thumbnail = "";
-        var userId = 1;
-
+        // Action
         void assertAction()
         {
-            var post = new Post(title, content, thumbnail, userId);
+            var post = PostBuilder.New().WithTitle(title).Build();
         }
 
+        // Assert
         Assert.Throws<DomainModelException>(assertAction).WithMessage("Title is required");
     }
 
@@ -60,15 +44,13 @@ public class PostTests
     [InlineData(0)]
     public void ShouldThrowIfUserIdIsInvalid(long userId)
     {
-        var title = "title";
-        var content = "content";
-        var thumbnail = "";
-
+        // Action
         void assertAction()
         {
-            var post = new Post(title, content, thumbnail, userId);
+            var post = PostBuilder.New().WithUserId(userId).Build();
         }
 
+        // Assert
         Assert.Throws<DomainModelException>(assertAction).WithMessage("User id is invalid");
     }
 
@@ -77,27 +59,10 @@ public class PostTests
     [InlineData(null)]
     public void ShouldCreateAPostWhenContentIsEmpty(string content)
     {
-        var title = "title";
-        var thumbnail = "";
-        var userId = 1;
+        // Action
+        var post = PostBuilder.New().WithContent(content).Build();
 
-        var post = new Post(title, content, thumbnail, userId);
-
-        Assert.NotNull(post);
-        Assert.Equal(title, post.Title);
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData(null)]
-    public void ShouldCreateAPostWhenThumbnailIsEmpty(string thumbnail)
-    {
-        var title = "title";
-        var content = "hello world";
-        var userId = 1;
-
-        var post = new Post(title, content, thumbnail, userId);
-
+        // Assert
         Assert.NotNull(post);
         Assert.Equal(content, post.Content);
     }
@@ -105,24 +70,44 @@ public class PostTests
     [Theory]
     [InlineData("")]
     [InlineData(null)]
+    public void ShouldCreateAPostWhenThumbnailIsEmpty(string thumbnail)
+    {
+        var post = PostBuilder.New().WithThumbnail(thumbnail).Build();
+
+        Assert.NotNull(post);
+        Assert.Equal(thumbnail, post.Thumbnail);
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(null)]
     public void ShouldThrowIfChangeTitleWithInvalidValue(string title)
     {
+        // Arrange
+        var post = PostBuilder.New().Build();
+
+        // Action
         void assertAction()
         {
-            _post.SetTitle(title);
+            post.SetTitle(title);
         }
 
+        // Assert
         Assert.Throws<DomainModelException>(assertAction).WithMessage("Title is required");
     }
 
     [Fact]
     public async Task ShouldSetUpdatedAtWhenPostIsModified()
     {
-        var postUpdatedAtBeforeChanged = _post.UpdatedAt;
+        // Arrange
+        var post = PostBuilder.New().Build();
+        var postUpdatedAtBeforeChanged = post.UpdatedAt;
 
+        // Action
         await Task.Delay(TimeSpan.FromSeconds(1));
-        _post.SetContent(_faker.Lorem.Sentence());
+        post.SetContent(_faker.Lorem.Sentence());
 
-        Assert.NotEqual(postUpdatedAtBeforeChanged, _post.UpdatedAt);
+        // Assert
+        Assert.NotEqual(postUpdatedAtBeforeChanged, post.UpdatedAt);
     }
 }
