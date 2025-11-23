@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Moq;
+using XUnitBlog.Domain.Dtos.Posts;
 using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Repositories;
 using XUnitBlog.Domain.Services;
@@ -86,5 +87,38 @@ public class PostServiceTest
         // Assert
         await Assert.ThrowsAsync<InvalidOperationException>(assertAction);
         _postRepository.Verify(repository => repository.GetById(It.IsAny<long>()));
+    }
+
+    [Fact]
+    public async Task ShouldGetAllPostsFromRepository()
+    {
+        // Arrange
+        var post = PostBuilder.New().Build();
+        _postRepository.Setup(repository => repository.GetAll()).ReturnsAsync([post, post]);
+
+        // Action
+        var posts = await _postService.GetAll();
+
+        // Assert
+        _postRepository.Verify(repository => repository.GetAll());
+        Assert.True(posts.Any());
+    }
+
+    [Fact]
+    public async Task ShouldGetAllPostsForUserFromRepository()
+    {
+        // Arrange
+        var post = PostBuilder.New().Build();
+        var userId = 1;
+        _postRepository
+            .Setup(repository => repository.GetAllByUser(userId))
+            .ReturnsAsync([post, post]);
+
+        // Action
+        var posts = await _postService.GetAllByUser(userId);
+
+        // Assert
+        _postRepository.Verify(repository => repository.GetAllByUser(It.IsAny<long>()));
+        Assert.True(posts.Any());
     }
 }

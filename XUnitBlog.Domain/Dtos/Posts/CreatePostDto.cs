@@ -1,6 +1,6 @@
 ﻿using XUnitBlog.Domain.Entities;
 
-namespace XUnitBlog.Domain.Dtos.Post;
+namespace XUnitBlog.Domain.Dtos.Posts;
 
 public class CreatePostDto
 {

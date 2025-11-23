@@ -1,4 +1,5 @@
-﻿using XUnitBlog.Domain.Dtos.Post;
+﻿using XUnitBlog.Domain.Dtos.Posts;
+using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Repositories;
 
 namespace XUnitBlog.Domain.Services;
@@ -10,6 +11,16 @@ public class PostService(IPostRepository postRepository)
         var post = postDto.MapToPost();
 
         await postRepository.AddAsync(post);
+    }
+
+    public async Task<IList<Post>> GetAll()
+    {
+        return await postRepository.GetAll();
+    }
+
+    public async Task<IList<Post>> GetAllByUser(long userId)
+    {
+        return await postRepository.GetAllByUser(userId);
     }
 
     public async Task UpdateAsync(long postId, UpdatePostDto postDto)
