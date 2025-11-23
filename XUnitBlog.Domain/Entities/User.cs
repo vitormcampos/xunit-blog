@@ -13,6 +13,7 @@ public class User
     public string UserName { get; private set; }
     public Role Role { get; private set; }
     public string Photo { get; private set; }
+    public ICollection<Post> Posts { get; set; }
 
     private User() { }
 

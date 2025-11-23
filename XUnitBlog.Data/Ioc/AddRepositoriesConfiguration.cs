@@ -9,5 +9,6 @@ public static class AddRepositoriesConfiguration
     public static void AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPostRepository, PostRepository>();
     }
 }

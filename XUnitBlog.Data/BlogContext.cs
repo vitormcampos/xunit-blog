@@ -10,6 +10,7 @@ internal class BlogContext : DbContext
         : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Post> Posts { get; internal set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
