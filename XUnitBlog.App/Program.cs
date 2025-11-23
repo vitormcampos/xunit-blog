@@ -39,16 +39,36 @@ builder
                 }
                 return Task.CompletedTask;
             },
+            OnChallenge = context =>
+            {
+                // Impede resposta JSON padrão
+                context.HandleResponse();
+
+                // Redireciona para Signin
+                context.Response.Redirect("/Auth/Login");
+                return Task.CompletedTask;
+            },
         };
     });
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/Admin");
+});
 
 builder.Services.AddDatabase(builder.Configuration);
 builder.Services.AddRepositories();
 
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<FileService>(provider =>
+{
+    var env = provider.GetRequiredService<IWebHostEnvironment>();
+    var wwwrootPath = env.WebRootPath;
+
+    return new FileService(wwwrootPath);
+});
 builder.Services.AddScoped<IJwtService, JwtService>(instance => new JwtService(key, issuer));
 
 var app = builder.Build();

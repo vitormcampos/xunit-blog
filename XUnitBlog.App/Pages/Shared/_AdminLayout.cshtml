@@ -17,23 +17,44 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
-    <header>
-        <nav class="uk-navbar-container">
-            <div class="uk-container">
-                <div uk-navbar>
-                    <div class="uk-navbar-left">
-                        <ul class="uk-navbar-nav">
-                            <li class="uk-active"><a href="/">Home</a></li>
-                        </ul>
-                    </div> 
-                </div>
+    <div class="uk-container-expand" uk-grid>
+        <div class="uk-width-1-5">
+            <ul class="uk-nav-default uk-padding" uk-nav="multiple: true" style="font-size: 18px">
+                <li class="uk-active">
+                    <a href="/">
+                        <span uk-icon="reply"></span>
+                        Voltar para Blog
+                    </a>
+                </li>
+                <li class="uk-parent">
+                    <a asp-page="/Admin/Users">
+                        <span uk-icon="users"></span>
+                        Usuários
+                        <span uk-nav-parent-icon></span>
+                    </a>
+                    <ul class="uk-nav-sub">
+                        <li><a asp-page="/Admin/Users/Index">Todos</a></li>
+                        <li><a asp-page="/Admin/Users/New">Novo</a></li>
+                    </ul>
+                </li>
+                <li class="uk-parent">
+                    <a asp-page="/Admin/Posts">
+                        <span uk-icon="copy"></span>
+                        Posts
+                        <span uk-nav-parent-icon></span>
+                    </a>
+                    <ul class="uk-nav-sub">
+                        <li><a asp-page="/Admin/Posts/Index">Todos</a></li>
+                        <li><a asp-page="/Admin/Posts/New">Novo</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="uk-width-expand uk-padding-large" style="height: 100dvh">
+            <div>
+                @RenderBody()
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        </div>
     </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
