@@ -1,7 +1,7 @@
 ﻿using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Exceptions;
 
-namespace XUnitBlog.Domain.Dtos;
+namespace XUnitBlog.Domain.Dtos.Users;
 
 public class CreateUserDto
 {

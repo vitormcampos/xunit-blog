@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using Moq;
-using XUnitBlog.Domain.Dtos;
+using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Domain.Repositories;
@@ -239,7 +239,7 @@ public class UserServiceTest
         var users = await _userService.GetAll();
 
         //Assert
-        Assert.IsType<List<User>>(users);
+        Assert.IsType<List<GetUserDto>>(users);
         Assert.Equal(2, users.Count);
     }
 
@@ -312,5 +312,39 @@ public class UserServiceTest
         await Assert
             .ThrowsAsync<DomainServiceException>(actionAssert)
             .WithMessageAsync("Usuário ou senha inválido");
+    }
+
+    [Fact]
+    public async Task ShouldReturnUserByIdAsync()
+    {
+        // Arrange
+        var userId = 1;
+
+        // Action
+        _repositoryMock.Setup(repository => repository.GetUserById(userId)).ReturnsAsync(_user);
+        var user = await _userService.GetById(userId);
+
+        // Assert
+        Assert.IsType<GetUserDto>(user);
+        _repositoryMock.Verify(repository => repository.GetUserById(It.IsAny<int>()));
+    }
+
+    [Fact]
+    public async void ShouldThrowIfUserNotExists()
+    {
+        // Arrange
+        var userId = 1;
+
+        // Action
+        async Task assertAction()
+        {
+            _repositoryMock
+                .Setup(repository => repository.GetUserById(userId))
+                .ReturnsAsync(() => null);
+            var user = await _userService.GetById(userId);
+        }
+
+        // Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(assertAction);
     }
 }

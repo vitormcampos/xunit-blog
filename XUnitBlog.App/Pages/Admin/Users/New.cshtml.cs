@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using XUnitBlog.Domain.Dtos;
+using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Services;
 
 namespace XUnitBlog.App.Pages.Admin.Users;

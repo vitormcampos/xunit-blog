@@ -24,12 +24,14 @@ internal class UserRepository(BlogContext blogContext) : IUserRepository
 
     public async Task<User?> GetUserById(int userId)
     {
-        return await blogContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        return await blogContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
     }
 
     public async Task<User?> GetUserByUserName(string userName)
     {
-        return await blogContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        return await blogContext
+            .Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserName == userName);
     }
 
     public async Task UpdateAsync(User user)

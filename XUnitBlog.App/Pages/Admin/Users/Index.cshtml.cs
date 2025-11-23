@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Services;
 
@@ -8,7 +9,7 @@ namespace XUnitBlog.App.Pages.Admin.Users;
 [Authorize(Roles = "ADMIN")]
 public class IndexModel(UserService userService) : PageModel
 {
-    public IList<User> Users { get; private set; }
+    public IList<GetUserDto> Users { get; private set; }
 
     public async Task OnGetAsync()
     {

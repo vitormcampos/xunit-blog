@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Intrinsics.Arm;
 using System.Threading.Tasks;
-using XUnitBlog.Domain.Dtos;
+using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Domain.Repositories;
@@ -13,6 +13,18 @@ public class UserService(
     IJwtService jwtService
 )
 {
+    public async Task<GetUserDto> GetById(int id)
+    {
+        var user = await repository.GetUserById(id);
+
+        if (user is null)
+        {
+            throw new InvalidOperationException("Usuário não encontrado");
+        }
+
+        return GetUserDto.MapToDto(user);
+    }
+
     public async Task AddAsync(CreateUserDto userDto)
     {
         var hashPassword = hashService.CreateHash(userDto.Password);
@@ -63,9 +75,11 @@ public class UserService(
         return user;
     }
 
-    public async Task<IList<User>> GetAll()
+    public async Task<IList<GetUserDto>> GetAll()
     {
-        return await repository.GetAll();
+        var users = await repository.GetAll();
+
+        return users.Select(GetUserDto.MapToDto).ToList();
     }
 
     public async Task<string> Authenticate(string email, string password)

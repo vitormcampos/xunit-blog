@@ -1,4 +1,4 @@
-﻿namespace XUnitBlog.Domain.Dtos;
+﻿namespace XUnitBlog.Domain.Dtos.Users;
 
 public class UpdateUserDto
 {

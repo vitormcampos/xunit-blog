@@ -1,4 +1,35 @@
 ﻿@page
 @model XUnitBlog.App.Pages.Admin.Users.UpdateModel
 @{
+    ViewData["Title"] = $"Editar usuário: {Model.UpdateUserDto.FirstName}";
 }
+
+<div class="uk-container uk-flex uk-flex-center uk-margin-top">
+    <form method="post" enctype="multipart/form-data">
+        <fieldset class="uk-fieldset">
+
+            <legend class="uk-legend uk-margin">@ViewData["Title"]</legend>
+            <div class="uk-child-width-1-1@@m" uk-grid>
+                <div>
+                    <label asp-for="UpdateUserDto.FirstName">Nome</label>
+                    <input class="uk-input" type="text" asp-for="UpdateUserDto.FirstName">
+                </div>
+                <div>
+                    <label asp-for="UpdateUserDto.LastName">Sobrenome</label>
+                    <input class="uk-input" type="text" asp-for="UpdateUserDto.LastName">
+                </div>
+                <div class="uk-margin" uk-margin>
+                    <div class="uk-width-1-1" uk-form-custom="target: true">
+                        <input type="file" aria-label="Selecione a foto de perfil" asp-for="UpdateUserDto.Photo">
+                        <input class="uk-input uk-form-width-medium uk-width-1-1" type="text"
+                               placeholder="Selecione a foto de perfil" aria-label="Selecione a foto de perfil" disabled>
+                    </div>
+                </div>
+            </div>
+
+            
+        </fieldset>
+
+        <button class="uk-button uk-button-primary" type="submit">Criar usuário</button>
+    </form>
+</div>
