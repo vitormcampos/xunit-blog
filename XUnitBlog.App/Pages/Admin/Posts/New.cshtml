@@ -1,0 +1,35 @@
+﻿@page
+@using XUnitBlog.App.Extensions
+@model XUnitBlog.App.Pages.Admin.Posts.NewModel
+@{
+    ViewData["Title"] = "Novo post";
+}
+
+<div class="uk-container uk-flex uk-flex-center uk-margin-top">
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="CreatePostDto.UserId" value="@User.GetId()">
+        <fieldset class="uk-fieldset">
+            <legend class="uk-legend uk-margin">Novo usuário</legend>
+            <div class="uk-child-width-1-1" uk-grid>
+                <div>
+                    <label asp-for="CreatePostDto.Title">Titulo</label>
+                    <input class="uk-input" type="text" asp-for="CreatePostDto.Title">
+                </div>
+                <div>
+                    <label asp-for="CreatePostDto.Content">Conteúdo</label>
+                    <textarea class="uk-textarea" asp-for="CreatePostDto.Content" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="uk-margin" uk-margin>
+                <div uk-form-custom="target: true">
+                    <input type="file" aria-label="Selecione a foto de perfil" asp-for="Thumbnail">
+                    <input class="uk-input uk-form-width-medium" type="text"
+                           placeholder="Selecione a foto de perfil" aria-label="Selecione a foto de perfil" disabled>
+                </div>
+            </div>
+        </fieldset>
+
+        <button class="uk-button uk-button-primary" type="submit">Criar usuário</button>
+    </form>
+</div>
