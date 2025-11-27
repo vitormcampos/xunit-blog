@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims
+@using XUnitBlog.App.Extensions
 @using XUnitBlog.Domain.Entities
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -26,17 +27,20 @@
                         Voltar para Blog
                     </a>
                 </li>
-                <li class="uk-parent">
-                    <a asp-page="/Admin/Users">
-                        <span uk-icon="users"></span>
-                        Usuários
-                        <span uk-nav-parent-icon></span>
-                    </a>
-                    <ul class="uk-nav-sub">
-                        <li><a asp-page="/Admin/Users/Index">Todos</a></li>
-                        <li><a asp-page="/Admin/Users/New">Novo</a></li>
-                    </ul>
-                </li>
+                @if (User.RoleIsAdmin())
+                {
+                    <li class="uk-parent">
+                        <a asp-page="/Admin/Users">
+                            <span uk-icon="users"></span>
+                            Usuários
+                            <span uk-nav-parent-icon></span>
+                        </a>
+                        <ul class="uk-nav-sub">
+                            <li><a asp-page="/Admin/Users/Index">Todos</a></li>
+                            <li><a asp-page="/Admin/Users/New">Novo</a></li>
+                        </ul>
+                    </li>
+                }
                 <li class="uk-parent">
                     <a asp-page="/Admin/Posts">
                         <span uk-icon="copy"></span>

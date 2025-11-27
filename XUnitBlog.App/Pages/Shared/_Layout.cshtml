@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims
+@using XUnitBlog.App.Extensions
 @using XUnitBlog.Domain.Entities
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -11,7 +12,7 @@
     <link rel="stylesheet" href="~/XUnitBlog.App.styles.css" asp-append-version="true" />
 
     <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/css/uikit.min.css" />
+    <link rel="stylesheet" href="~/lib/uikit/css/uikit.min.css" />
 
     <!-- AlpineJS -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -23,17 +24,9 @@
                 <div uk-navbar uk-grid>
                     <div class="uk-width-auto">
                         <ul class="uk-navbar-nav">
-                            <li class="uk-active"><a href="/">Home</a></li>
-                            <li>
-                                <a href="#">Parent</a>
-                                <div class="uk-navbar-dropdown">
-                                    <ul class="uk-nav uk-navbar-dropdown-nav">
-                                        <li class="uk-active"><a href="#">Active</a></li>
-                                        <li><a href="#">Item</a></li>
-                                        <li><a href="#">Item</a></li>
-                                    </ul>
-                                </div>
-                            </li>
+                            <li class="uk-active"><a href="/">Inicio</a></li>
+                            <li><a href="/#news">Novidades</a></li>
+                            <li><a href="/#about">Sobre</a></li>
                         </ul>
                     </div>
                     <div class="uk-width-expand uk-flex uk-flex-center uk-flex-middle">
@@ -42,18 +35,22 @@
                             <input class="uk-search-input" type="search" placeholder="Pesquisar conteúdo" aria-label="Pesquisar conteúdo">
                         </form>
                     </div>
-                    <div class="uk-width-auto">
+                    <div class="uk-width-auto uk-flex uk-flex-center uk-flex-middle">
                         <ul class="uk-navbar-nav">
-                            @if (User.Claims.Any(c => c.Type == ClaimTypes.Role && c.Value == Role.ADMIN.ToString()))
+                            @if (User.Identity.IsAuthenticated)
                             {
-                                <li><a asp-page="Admin/Index">Admin</a></li>
+                                <li>
+                                    <div>
+                                        <a asp-page="Admin/Index" class="uk-button uk-button-secondary">Admin</a>
+                                    </div>
+                                </li>
                             }
                             else
                             {
                                 <li>
-                                    <a href="auth/profile">
-                                        <span uk-icon="icon: user; ratio: 1" style="border: 1px solid #ccc; border-radius: 100%; padding: 10px"></span>
-                                    </a>
+                                    <div>
+                                        <a asp-page="/Auth/Login" class="uk-button uk-button-secondary">Login</a>
+                                    </div>
                                 </li>
                             }
                         </ul>
@@ -62,25 +59,28 @@
             </div>
         </nav>
     </header>
-    <main class="uk-container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <main class="uk-container-fluid uk-padding-small uk-padding-remove-vertical">
+        @RenderBody()
     </main>
-    <footer class="uk-flex uk-flex-between uk-flex-middle uk-padding-large uk-padding-remove-vertical">
+    <footer class="uk-padding uk-flex uk-flex-between uk-flex-middle uk-light uk-background-secondary">
         <div>
             <h3>XUnitBlog</h3>
         </div>
         <div>
-            <p>Desenvolvido por @@Vitor Campos</p>
+            <p>
+                Desenvolvido por
+                <a href="https://github.com/vitormcampos/">
+                    @@Vitor Campos
+                </a>
+            </p>
         </div>
     </footer>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit-icons.min.js"></script>
+    <script src="~/lib/uikit/js/uikit.min.js"></script>
+    <script src="~/lib/uikit/js/uikit-icons.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -1,10 +1,68 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Main Grid -->
+
+<div class="uk-grid-collapse uk-grid-match" uk-grid>
+    <div class="uk-width-3-4 uk-inline">
+        <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
+
+        <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
+            Testando
+        </div>
+    </div>
+    <div class="uk-width-1-4 uk-grid-collapse uk-child-width-1-1" uk-grid>
+        <div>
+            <div class="uk-inline uk-margin">
+                <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
+
+                <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
+                    Testando
+                </div>
+
+            </div>
+        </div>
+        <div>
+            <div class="uk-inline uk-margin">
+                <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
+
+                <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
+                    Testando
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="uk-inline uk-margin">
+                <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
+
+                <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
+                    Testando
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<section style="margin: 20px 220px;">
+    <h3 class="uk-text-center uk-text-bold">Recentes</h3>
+
+    @foreach (var post in Model.LatestPosts)
+    {
+        <div class="uk-child-width-1-3 uk-flex-center uk-flex-middle" uk-grid>
+            <div>
+                <h4 class="uk-text-bold uk-margin-remove">@post.Title</h4>
+                <p class="uk-text-small uk-margin-remove">@post.UpdatedAt.ToString("d/MM/yyyy")</p>
+            </div>
+            <div>
+                <p class="uk-text-small">@(post.Content.Length > 200 ? post.Content.Substring(0, 200) + "..." : post.Content)</p>
+            </div>
+            <div>
+                <img src="@post.Thumbnail" alt="" />
+            </div>
+        </div>
+    }
+</section>
+

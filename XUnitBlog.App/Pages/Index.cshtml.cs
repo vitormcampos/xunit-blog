@@ -1,9 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using XUnitBlog.Domain.Entities;
+using XUnitBlog.Domain.Services;
 
 namespace XUnitBlog.App.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel(PostService postService) : PageModel
 {
-    public void OnGet() { }
+    public IList<Post> LatestPosts { get; set; }
+
+    public async Task OnGetAsync()
+    {
+        LatestPosts = await postService.GetAll();
+    }
 }
