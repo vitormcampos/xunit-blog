@@ -8,9 +8,10 @@ public class CreatePostDto
     public string Content { get; set; }
     public string Thumbnail { get; set; }
     public long UserId { get; set; }
+    public bool Pinned { get; set; }
 
     public Post MapToPost()
     {
-        return new Post(Title, Content, Thumbnail, UserId);
+        return new Post(Title, Content, Thumbnail, UserId, Pinned);
     }
 }

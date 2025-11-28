@@ -1,48 +1,47 @@
 ﻿@page
+@using XUnitBlog.Domain.Entities
 @model IndexModel
 @{
     ViewData["Title"] = "Inicio";
+
+    var mainPost = Model.PinnedPosts.FirstOrDefault();
+    IList<Post> remainingPosts;
+    if (Model.PinnedPosts.Any())
+    {
+        remainingPosts = Model.PinnedPosts.Skip(1).ToList();
+    }
+    else
+    {
+        remainingPosts = [];
+    }
 }
 
 <!-- Main Grid -->
-
 <div class="uk-grid-collapse uk-grid-match" uk-grid>
-    <div class="uk-width-3-4 uk-inline">
-        <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
+    @if (mainPost is not null)
+    {
+        <div class="uk-width-3-4 uk-inline">
+            <img src="@mainPost.Thumbnail" alt="@mainPost.Title" style="height: 100%; object-fit: cover;" />
 
-        <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
-            Testando
+            <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
+                @mainPost.Title
+            </div>
         </div>
-    </div>
+    }
     <div class="uk-width-1-4 uk-grid-collapse uk-child-width-1-1" uk-grid>
-        <div>
-            <div class="uk-inline uk-margin">
-                <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
+        @foreach (var post in remainingPosts)
+        {
+            <div>
+                <div class="uk-inline uk-margin">
+                    <img src="@post.Thumbnail" alt="@post.Title" style="height: 100%; object-fit: cover;" />
 
-                <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
-                    Testando
-                </div>
+                    <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
+                        @post.Title
+                    </div>
 
-            </div>
-        </div>
-        <div>
-            <div class="uk-inline uk-margin">
-                <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
-
-                <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
-                    Testando
                 </div>
             </div>
-        </div>
-        <div>
-            <div class="uk-inline uk-margin">
-                <img src="https://images.pexels.com/photos/25078526/pexels-photo-25078526.jpeg" alt="" />
-
-                <div class="uk-position-bottom uk-overlay uk-padding-small" style="color: white">
-                    Testando
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>
 

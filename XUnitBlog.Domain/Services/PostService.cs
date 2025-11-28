@@ -23,6 +23,13 @@ public class PostService(IPostRepository postRepository)
         return await postRepository.GetAllByUser(userId);
     }
 
+    public async Task<IList<Post>> GetAllPinnedPosts()
+    {
+        var posts = await postRepository.GetAllPinnedPosts();
+
+        return posts ?? [];
+    }
+
     public async Task UpdateAsync(long postId, UpdatePostDto postDto)
     {
         var currentPost = await postRepository.GetById(postId);

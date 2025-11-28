@@ -11,18 +11,20 @@ public class Post
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     public PostStatuses PostStatus { get; private set; }
+    public bool Pinned { get; private set; }
     public long UserId { get; private set; }
     public User User { get; private set; }
 
     private Post() { }
 
-    public Post(string title, string content, string thumbnail, long userId)
+    public Post(string title, string content, string thumbnail, long userId, bool pinned = false)
     {
         SetTitle(title);
         SetContent(content);
         SetThumbnail(thumbnail);
         CreatedAt = DateTime.UtcNow;
         PostStatus = PostStatuses.Draft;
+        Pinned = pinned;
 
         if (userId <= 0)
         {
@@ -30,6 +32,7 @@ public class Post
         }
 
         UserId = userId;
+        Pinned = pinned;
     }
 
     public void SetTitle(string title)
@@ -57,4 +60,10 @@ public class Post
         Thumbnail = thumbnail;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void PinPost() => Pinned = true;
+
+    public void UnpinPost() => Pinned = false;
+
+    public void SetStatus(PostStatuses status) => PostStatus = status;
 }

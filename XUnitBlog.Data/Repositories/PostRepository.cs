@@ -22,6 +22,15 @@ internal class PostRepository(BlogContext context) : IPostRepository
         return await context.Posts.Where(p => p.UserId == userId).AsNoTracking().ToListAsync();
     }
 
+    public async Task<IList<Post>> GetAllPinnedPosts()
+    {
+        return await context
+            .Posts.Where(p => p.Pinned && p.PostStatus == PostStatuses.Published)
+            .AsNoTracking()
+            .Take(4)
+            .ToListAsync();
+    }
+
     public async Task<Post> GetById(long id)
     {
         return await context.Posts.FirstOrDefaultAsync(p => p.Id == id);

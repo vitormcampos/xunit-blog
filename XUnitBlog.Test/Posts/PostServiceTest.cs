@@ -121,4 +121,36 @@ public class PostServiceTest
         _postRepository.Verify(repository => repository.GetAllByUser(It.IsAny<long>()));
         Assert.True(posts.Any());
     }
+
+    [Fact]
+    public async Task ShouldGetAllPinnedPostsFromRepository()
+    {
+        // Arrange
+        var post = PostBuilder.New().IsPinned(true).Build();
+        _postRepository.Setup(repository => repository.GetAllPinnedPosts()).ReturnsAsync([post]);
+
+        // Action
+        var pinnedPosts = await _postService.GetAllPinnedPosts();
+
+        // Assert
+        _postRepository.Verify(repository => repository.GetAllPinnedPosts());
+        Assert.True(pinnedPosts.Any());
+        Assert.DoesNotContain(pinnedPosts, p => !p.Pinned);
+    }
+
+    [Fact]
+    public async Task ShouldReturnEmptyListWhenNotFindPinnedPostsFromRepository()
+    {
+        // Arrange
+        _postRepository
+            .Setup(repository => repository.GetAllPinnedPosts())
+            .ReturnsAsync(() => null);
+
+        // Action
+        var pinnedPosts = await _postService.GetAllPinnedPosts();
+
+        // Assert
+        _postRepository.Verify(repository => repository.GetAllPinnedPosts());
+        Assert.IsAssignableFrom<IList<Post>>(pinnedPosts);
+    }
 }
