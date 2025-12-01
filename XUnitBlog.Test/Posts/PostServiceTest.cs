@@ -1,7 +1,9 @@
 ﻿using Bogus;
 using Moq;
 using XUnitBlog.Domain.Dtos.Posts;
+using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Entities;
+using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Domain.Repositories;
 using XUnitBlog.Domain.Services;
 using XUnitBlog.Test._Builders;
@@ -152,5 +154,75 @@ public class PostServiceTest
         // Assert
         _postRepository.Verify(repository => repository.GetAllPinnedPosts());
         Assert.IsAssignableFrom<IList<Post>>(pinnedPosts);
+    }
+
+    [Fact]
+    public async Task ShouldUpdatePost()
+    {
+        // Arrange
+        var postId = 1;
+        var post = PostBuilder.New().Build();
+        var postDto = new UpdatePostDto
+        {
+            Title = _faker.Random.Words(2),
+            Content = post.Content,
+            Pinned = post.Pinned,
+            Thumbnail = post.Thumbnail,
+        };
+        var expectedPost = PostBuilder.New().WithTitle(postDto.Title).Build();
+        _postRepository
+            .Setup(repository => repository.GetById(It.IsAny<long>()))
+            .ReturnsAsync(post);
+        _postRepository
+            .Setup(repository => repository.UpdateAsync(It.IsAny<long>(), It.IsAny<Post>()))
+            .ReturnsAsync(expectedPost);
+
+        // Action
+        var updatedPost = await _postService.UpdateAsync(postId, postDto);
+
+        // Assert
+        Assert.NotNull(updatedPost);
+        Assert.Equal(postDto.Title, updatedPost.Title);
+        _postRepository.Verify(repository => repository.GetById(It.IsAny<long>()));
+        _postRepository.Verify(repository =>
+            repository.UpdateAsync(It.IsAny<long>(), It.IsAny<Post>())
+        );
+    }
+
+    [Fact]
+    public async Task ShouldGetAPostById()
+    {
+        // Arrange
+        var postId = 1;
+        var expectedPost = PostBuilder.New().Build();
+        _postRepository
+            .Setup(repository => repository.GetById(It.IsAny<long>()))
+            .ReturnsAsync(expectedPost);
+
+        // Action
+        var post = await _postService.GetById(postId);
+
+        Assert.NotNull(post);
+    }
+
+    [Fact]
+    public async Task ShouldThrowIfNonAdminUserChangesPinnedPostStatus()
+    {
+        // Arrange
+        var user = new GetUserDto { Role = Role.EDITOR };
+        var postId = 1;
+        var postDto = new UpdatePostDto { Title = _faker.Random.Words(2), Pinned = true };
+        var expectedPost = PostBuilder.New().Build();
+        _postRepository
+            .Setup(repository => repository.GetById(It.IsAny<long>()))
+            .ReturnsAsync(expectedPost);
+
+        // Action
+        async Task assertActionAsync()
+        {
+            await _postService.ValidateUserCanUpdatePinnedFlag(user, postDto, postId);
+        }
+
+        await Assert.ThrowsAsync<DomainServiceException>(assertActionAsync);
     }
 }

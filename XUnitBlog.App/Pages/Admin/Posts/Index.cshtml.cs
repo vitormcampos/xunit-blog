@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using XUnitBlog.App.Extensions;
@@ -6,6 +7,7 @@ using XUnitBlog.Domain.Services;
 
 namespace XUnitBlog.App.Pages.Admin.Posts;
 
+[Authorize]
 public class IndexModel(PostService postService) : PageModel
 {
     [BindProperty]

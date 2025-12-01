@@ -17,13 +17,20 @@ public class Post
 
     private Post() { }
 
-    public Post(string title, string content, string thumbnail, long userId, bool pinned = false)
+    public Post(
+        string title,
+        string content,
+        string thumbnail,
+        long userId,
+        bool pinned = false,
+        PostStatuses status = PostStatuses.Draft
+    )
     {
         SetTitle(title);
         SetContent(content);
         SetThumbnail(thumbnail);
+        SetStatus(status);
         CreatedAt = DateTime.UtcNow;
-        PostStatus = PostStatuses.Draft;
         Pinned = pinned;
 
         if (userId <= 0)

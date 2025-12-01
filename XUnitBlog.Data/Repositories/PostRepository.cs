@@ -33,10 +33,10 @@ internal class PostRepository(BlogContext context) : IPostRepository
 
     public async Task<Post> GetById(long id)
     {
-        return await context.Posts.FirstOrDefaultAsync(p => p.Id == id);
+        return await context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task UpdateAsync(long postId, Post post)
+    public async Task<Post?> UpdateAsync(long postId, Post post)
     {
         await context
             .Posts.Where(p => p.Id == postId)
@@ -48,5 +48,7 @@ internal class PostRepository(BlogContext context) : IPostRepository
                     .SetProperty(p => p.PostStatus, post.PostStatus)
             );
         await context.SaveChangesAsync();
+
+        return await context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
     }
 }

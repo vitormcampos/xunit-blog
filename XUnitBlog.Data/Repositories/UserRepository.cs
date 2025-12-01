@@ -22,7 +22,7 @@ internal class UserRepository(BlogContext blogContext) : IUserRepository
         return await blogContext.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
-    public async Task<User?> GetUserById(int userId)
+    public async Task<User?> GetUserById(long userId)
     {
         return await blogContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
     }
