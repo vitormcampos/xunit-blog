@@ -13,7 +13,7 @@ public class UserService(
     IJwtService jwtService
 )
 {
-    public async Task<GetUserDto> GetById(int id)
+    public async Task<GetUserDto> GetById(long id)
     {
         var user = await repository.GetUserById(id);
 
