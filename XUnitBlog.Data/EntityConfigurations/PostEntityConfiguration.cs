@@ -25,6 +25,12 @@ public class PostEntityConfiguration : IEntityTypeConfiguration<Post>
         builder.Property(p => p.UpdatedAt).HasColumnName("updated_at").IsRequired();
 
         builder
+            .Property(p => p.Pinned)
+            .HasColumnName("pinned")
+            .HasColumnType("bool")
+            .HasDefaultValue(false);
+
+        builder
             .Property(p => p.PostStatus)
             .HasColumnName("post_status")
             .HasConversion<string>()

@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Test._Builders;
+using XUnitBlog.Test.Builders;
 using XUnitBlog.Test.Extensions;
 
 namespace XUnitBlog.Test.Posts;
@@ -109,5 +110,42 @@ public class PostTests
 
         // Assert
         Assert.NotEqual(postUpdatedAtBeforeChanged, post.UpdatedAt);
+    }
+
+    [Fact]
+    public void ShouldCreatePinnedPost()
+    {
+        // Action
+        var post = PostBuilder.New().IsPinned(true).Build();
+
+        // Assert
+        Assert.True(post.Pinned);
+    }
+
+    [Fact]
+    public void ShouldPinAnExistingPost()
+    {
+        // Arrange
+        var post = PostBuilder.New().IsPinned(false).Build();
+
+        // Action
+        post.PinPost();
+
+        // Assert
+        Assert.True(post.Pinned);
+    }
+
+    [Fact]
+    public void ShouldUpdatePostStatus()
+    {
+        // Arange
+        var post = PostBuilder.New().Build();
+        var expectedStatus = Domain.Entities.PostStatuses.Published;
+
+        // Action
+        post.SetStatus(Domain.Entities.PostStatuses.Published);
+
+        // Assert
+        Assert.Equal(expectedStatus, post.PostStatus);
     }
 }

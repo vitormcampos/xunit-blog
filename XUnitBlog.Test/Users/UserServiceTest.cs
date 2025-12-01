@@ -326,7 +326,7 @@ public class UserServiceTest
 
         // Assert
         Assert.IsType<GetUserDto>(user);
-        _repositoryMock.Verify(repository => repository.GetUserById(It.IsAny<int>()));
+        _repositoryMock.Verify(repository => repository.GetUserById(It.IsAny<long>()));
     }
 
     [Fact]
