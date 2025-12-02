@@ -12,7 +12,9 @@ public class UpdateModel(UserService userService) : PageModel
     [BindProperty]
     public UpdateUserDto UpdateUserDto { get; set; }
 
-    public async Task<IActionResult> OnGet(int id)
+    public Dictionary<string, string> Errors { get; set; } = [];
+
+    public async Task<IActionResult> OnGetAsync(int id)
     {
         var targetUser = await userService.GetById(id);
 
@@ -29,5 +31,18 @@ public class UpdateModel(UserService userService) : PageModel
         };
 
         return Page();
+    }
+
+    public async Task OnPostAsync(int id)
+    {
+        try
+        {
+            var result = await userService.UpdateAsync(id, UpdateUserDto);
+            Response.Redirect("/Admin/Users/Index");
+        }
+        catch (ArgumentException e)
+        {
+            Errors.Add(nameof(UpdateUserDto), e.Message);
+        }
     }
 }

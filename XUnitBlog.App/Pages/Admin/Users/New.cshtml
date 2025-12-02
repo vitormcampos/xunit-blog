@@ -6,6 +6,13 @@
 }
 
 <div class="uk-container uk-flex uk-flex-center uk-margin-top">
+    @foreach (var error in Model.Errors)
+    {
+        <div class="uk-alert-danger" uk-alert>
+            <a href class="uk-alert-close" uk-close></a>
+            <p><b>@error.Value</b></p>
+        </div>
+    }
     <form method="post" enctype="multipart/form-data">
         <fieldset class="uk-fieldset">
 

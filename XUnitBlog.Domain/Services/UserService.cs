@@ -52,7 +52,7 @@ public class UserService(
 
         if (user is null)
         {
-            throw new DomainServiceException("Usuário não encontrado");
+            throw new ArgumentException("Usuário não encontrado");
         }
 
         if (userDto.FirstName != user.FirstName)

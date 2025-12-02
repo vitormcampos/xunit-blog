@@ -7,6 +7,7 @@ using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Domain.Repositories;
 using XUnitBlog.Domain.Services;
 using XUnitBlog.Test._Builders;
+using XUnitBlog.Test.Extensions;
 
 namespace XUnitBlog.Test.Posts;
 
@@ -43,6 +44,30 @@ public class PostServiceTest
     }
 
     [Fact]
+    public async Task ShouldThrowWhenAddPostWithInvalidUserIdAsync()
+    {
+        // Arange
+        var post = new CreatePostDto
+        {
+            Title = _faker.Lorem.Sentence(),
+            Content = _faker.Lorem.Paragraph(),
+            Thumbnail = _faker.Image.PlaceImgUrl(),
+            UserId = 0,
+        };
+
+        // Action
+        async Task assertAction()
+        {
+            await _postService.AddAsync(post);
+        }
+
+        // Assert
+        await Assert
+            .ThrowsAsync<DomainModelException>(assertAction)
+            .WithMessageAsync("User id is invalid");
+    }
+
+    [Fact]
     public async Task ShouldUpdatePostOnRepository()
     {
         // Arange
@@ -54,10 +79,11 @@ public class PostServiceTest
             Content = _faker.Lorem.Paragraph(),
             Thumbnail = _faker.Image.PlaceImgUrl(),
         };
+        var loggedInUser = new GetUserDto { Role = Role.EDITOR };
         _postRepository.Setup(repository => repository.GetById(postId)).ReturnsAsync(currentPost);
 
         // Action
-        await _postService.UpdateAsync(postId, postDto);
+        await _postService.UpdateAsync(postId, postDto, loggedInUser);
 
         // Assert
         _postRepository.Verify(repository => repository.GetById(It.IsAny<long>()));
@@ -67,7 +93,7 @@ public class PostServiceTest
     }
 
     [Fact]
-    public async Task ShouldThrowIfUpdatingNonexistentPost()
+    public async Task ShouldThrowWhenUpdatingNonExistentPost()
     {
         // Arange
         var postId = Convert.ToInt64(_faker.Random.Number(1, 10));
@@ -78,17 +104,62 @@ public class PostServiceTest
             Content = _faker.Lorem.Paragraph(),
             Thumbnail = _faker.Image.PlaceImgUrl(),
         };
+        var loggedInUser = new GetUserDto { Role = Role.EDITOR };
         _postRepository.Setup(repository => repository.GetById(postId)).ReturnsAsync(() => null);
 
         // Action
         async Task assertAction()
         {
-            await _postService.UpdateAsync(postId, postDto);
+            await _postService.UpdateAsync(postId, postDto, loggedInUser);
         }
 
         // Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(assertAction);
+        await Assert.ThrowsAsync<ArgumentException>(assertAction);
         _postRepository.Verify(repository => repository.GetById(It.IsAny<long>()));
+    }
+
+    [Fact]
+    public async Task ShouldThrowWhenNonAdminUserChangesPinnedPostStatus()
+    {
+        // Arrange
+        var loggedInUser = new GetUserDto { Role = Role.EDITOR };
+        var postId = 1;
+        var postDto = new UpdatePostDto { Title = _faker.Random.Words(2), Pinned = true };
+        var expectedPost = PostBuilder.New().Build();
+        _postRepository
+            .Setup(repository => repository.GetById(It.IsAny<long>()))
+            .ReturnsAsync(expectedPost);
+
+        // Action
+        async Task assertActionAsync()
+        {
+            await _postService.UpdateAsync(postId, postDto, loggedInUser);
+        }
+
+        await Assert.ThrowsAsync<DomainServiceException>(assertActionAsync);
+    }
+
+    [Fact]
+    public async Task ShouldThrowsWhenUpdatePostWithEmptyTitleAsync()
+    {
+        // Arrange
+        var postId = 1;
+        var postDto = new UpdatePostDto { Title = "" };
+        var loggedInUser = new GetUserDto { };
+        _postRepository
+            .Setup(repository => repository.GetById(It.IsAny<long>()))
+            .ReturnsAsync(PostBuilder.New().Build());
+
+        // Action
+        async Task assertAction()
+        {
+            await _postService.UpdateAsync(postId, postDto, loggedInUser);
+        }
+
+        // Assert
+        await Assert
+            .ThrowsAsync<DomainModelException>(assertAction)
+            .WithMessageAsync("Title is required");
     }
 
     [Fact]
@@ -157,39 +228,6 @@ public class PostServiceTest
     }
 
     [Fact]
-    public async Task ShouldUpdatePost()
-    {
-        // Arrange
-        var postId = 1;
-        var post = PostBuilder.New().Build();
-        var postDto = new UpdatePostDto
-        {
-            Title = _faker.Random.Words(2),
-            Content = post.Content,
-            Pinned = post.Pinned,
-            Thumbnail = post.Thumbnail,
-        };
-        var expectedPost = PostBuilder.New().WithTitle(postDto.Title).Build();
-        _postRepository
-            .Setup(repository => repository.GetById(It.IsAny<long>()))
-            .ReturnsAsync(post);
-        _postRepository
-            .Setup(repository => repository.UpdateAsync(It.IsAny<long>(), It.IsAny<Post>()))
-            .ReturnsAsync(expectedPost);
-
-        // Action
-        var updatedPost = await _postService.UpdateAsync(postId, postDto);
-
-        // Assert
-        Assert.NotNull(updatedPost);
-        Assert.Equal(postDto.Title, updatedPost.Title);
-        _postRepository.Verify(repository => repository.GetById(It.IsAny<long>()));
-        _postRepository.Verify(repository =>
-            repository.UpdateAsync(It.IsAny<long>(), It.IsAny<Post>())
-        );
-    }
-
-    [Fact]
     public async Task ShouldGetAPostById()
     {
         // Arrange
@@ -203,26 +241,5 @@ public class PostServiceTest
         var post = await _postService.GetById(postId);
 
         Assert.NotNull(post);
-    }
-
-    [Fact]
-    public async Task ShouldThrowIfNonAdminUserChangesPinnedPostStatus()
-    {
-        // Arrange
-        var user = new GetUserDto { Role = Role.EDITOR };
-        var postId = 1;
-        var postDto = new UpdatePostDto { Title = _faker.Random.Words(2), Pinned = true };
-        var expectedPost = PostBuilder.New().Build();
-        _postRepository
-            .Setup(repository => repository.GetById(It.IsAny<long>()))
-            .ReturnsAsync(expectedPost);
-
-        // Action
-        async Task assertActionAsync()
-        {
-            await _postService.ValidateUserCanUpdatePinnedFlag(user, postDto, postId);
-        }
-
-        await Assert.ThrowsAsync<DomainServiceException>(assertActionAsync);
     }
 }

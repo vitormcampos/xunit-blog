@@ -1,4 +1,5 @@
-﻿using XUnitBlog.Domain.Dtos.Posts;
+﻿using Microsoft.Extensions.Hosting;
+using XUnitBlog.Domain.Dtos.Posts;
 using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Entities;
 using XUnitBlog.Domain.Exceptions;
@@ -37,16 +38,16 @@ public class PostService(IPostRepository postRepository)
         return await postRepository.GetById(postId);
     }
 
-    public async Task<bool> ValidateUserCanUpdatePinnedFlag(
-        GetUserDto user,
-        UpdatePostDto updatePostDto,
-        long postId
-    )
+    public async Task<Post> UpdateAsync(long postId, UpdatePostDto postDto, GetUserDto loggedInUser)
     {
-        var post = await postRepository.GetById(postId);
-        var postPinnedChanged = updatePostDto.Pinned != post.Pinned;
+        var currentPost = await postRepository.GetById(postId);
+        if (currentPost is null)
+        {
+            throw new ArgumentException("Post not found");
+        }
 
-        if (postPinnedChanged && user.Role != Role.ADMIN)
+        var postPinnedChanged = postDto.Pinned != currentPost.Pinned;
+        if (postPinnedChanged && loggedInUser.Role != Role.ADMIN)
         {
             throw new DomainServiceException(
                 "Just ADMIN users can change the post fixed status",
@@ -54,19 +55,34 @@ public class PostService(IPostRepository postRepository)
             );
         }
 
-        return true;
-    }
-
-    public async Task<Post> UpdateAsync(long postId, UpdatePostDto postDto)
-    {
-        var currentPost = await postRepository.GetById(postId);
-        if (currentPost is null)
+        if (postPinnedChanged)
         {
-            throw new InvalidOperationException();
+            if (postDto.Pinned)
+            {
+                currentPost.PinPost();
+            }
+            else
+            {
+                currentPost.UnpinPost();
+            }
         }
 
-        var post = postDto.MapToPost(currentPost.UserId);
-        var updatedPost = await postRepository.UpdateAsync(postId, post);
+        if (currentPost.Title != postDto.Title)
+        {
+            currentPost.SetTitle(postDto.Title);
+        }
+
+        if (currentPost.Content != postDto.Content)
+        {
+            currentPost.SetContent(postDto.Content);
+        }
+
+        if (currentPost.Thumbnail != postDto.Thumbnail)
+        {
+            currentPost.SetThumbnail(postDto.Thumbnail);
+        }
+
+        var updatedPost = await postRepository.UpdateAsync(postId, currentPost);
 
         return updatedPost;
     }

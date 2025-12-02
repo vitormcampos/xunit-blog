@@ -26,17 +26,17 @@ public class Post
         PostStatuses status = PostStatuses.Draft
     )
     {
+        if (userId <= 0)
+        {
+            throw new DomainModelException("User id is invalid");
+        }
+
         SetTitle(title);
         SetContent(content);
         SetThumbnail(thumbnail);
         SetStatus(status);
         CreatedAt = DateTime.UtcNow;
         Pinned = pinned;
-
-        if (userId <= 0)
-        {
-            throw new DomainModelException("User id is invalid");
-        }
 
         UserId = userId;
         Pinned = pinned;

@@ -14,13 +14,21 @@ public class NewModel(UserService userService) : PageModel
 
     [BindProperty]
     public IFormFile Photo { get; set; }
+    public Dictionary<string, string> Errors { get; set; } = [];
 
     public void OnGet() { }
 
     public async Task OnPostAsync()
     {
-        await userService.AddAsync(CreateUser);
+        try
+        {
+            await userService.AddAsync(CreateUser);
 
-        Response.Redirect("/admin/users");
+            Response.Redirect("/admin/users");
+        }
+        catch (ArgumentException e)
+        {
+            Errors.Add(nameof(CreateUser), e.Message);
+        }
     }
 }
