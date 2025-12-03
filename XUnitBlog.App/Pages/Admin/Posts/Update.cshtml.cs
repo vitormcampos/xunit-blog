@@ -51,7 +51,7 @@ public class UpdateModel(PostService postService, UserService userService, FileS
             }
 
             var user = await userService.GetById(User.GetId());
-            await postService.UpdateAsync(id, UpdatePostDto, user);
+            await postService.Update(id, UpdatePostDto, user);
 
             Response.Redirect("/Admin/Posts/Index");
         }

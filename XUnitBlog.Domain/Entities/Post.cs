@@ -1,4 +1,5 @@
-﻿using XUnitBlog.Domain.Exceptions;
+﻿using XUnitBlog.Domain.Dtos.Users;
+using XUnitBlog.Domain.Exceptions;
 
 namespace XUnitBlog.Domain.Entities;
 
@@ -68,9 +69,40 @@ public class Post
         UpdatedAt = DateTime.UtcNow;
     }
 
-    public void PinPost() => Pinned = true;
-
-    public void UnpinPost() => Pinned = false;
+    public void TogglePinned(bool pinned)
+    {
+        Pinned = pinned;
+    }
 
     public void SetStatus(PostStatuses status) => PostStatus = status;
+
+    public void Update(
+        string title,
+        string content,
+        string thumbnail,
+        bool pinned,
+        PostStatuses status,
+        GetUserDto user
+    )
+    {
+        if (pinned != this.Pinned)
+        {
+            if (user.Role != Role.ADMIN)
+                throw new DomainModelException("Just ADMIN users can change the post fixed status");
+
+            TogglePinned(pinned);
+        }
+
+        if (Title != title)
+            SetTitle(title);
+
+        if (Content != content)
+            SetContent(content);
+
+        if (Thumbnail != thumbnail)
+            SetThumbnail(thumbnail);
+
+        if (PostStatus != status)
+            SetStatus(status);
+    }
 }
