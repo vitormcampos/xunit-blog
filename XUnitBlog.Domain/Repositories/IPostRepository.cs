@@ -9,5 +9,5 @@ public interface IPostRepository
     Task<IList<Post>> GetAllByUser(long userId);
     Task<IList<Post>> GetAllPinnedPosts();
     Task<Post> GetById(long id);
-    Task<Post> UpdateAsync(long postId, Post post);
+    Task<Post> Update(Post post);
 }

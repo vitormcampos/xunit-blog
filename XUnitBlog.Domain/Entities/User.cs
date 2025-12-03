@@ -94,4 +94,22 @@ public class User
 
         UserName = userName.ToLower();
     }
+
+    public void Update(string firstName, string lastName, string photo)
+    {
+        if (firstName != FirstName)
+        {
+            SetFirstName(firstName);
+        }
+
+        if (lastName != LastName)
+        {
+            SetLastName(lastName);
+        }
+
+        if (photo != Photo)
+        {
+            SetPhoto(photo);
+        }
+    }
 }

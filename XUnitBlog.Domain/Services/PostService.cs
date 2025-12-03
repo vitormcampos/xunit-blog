@@ -38,7 +38,7 @@ public class PostService(IPostRepository postRepository)
         return await postRepository.GetById(postId);
     }
 
-    public async Task<Post> UpdateAsync(long postId, UpdatePostDto postDto, GetUserDto loggedInUser)
+    public async Task<Post> Update(long postId, UpdatePostDto postDto, GetUserDto loggedInUser)
     {
         var currentPost = await postRepository.GetById(postId);
         if (currentPost is null)
@@ -46,43 +46,16 @@ public class PostService(IPostRepository postRepository)
             throw new ArgumentException("Post not found");
         }
 
-        var postPinnedChanged = postDto.Pinned != currentPost.Pinned;
-        if (postPinnedChanged && loggedInUser.Role != Role.ADMIN)
-        {
-            throw new DomainServiceException(
-                "Just ADMIN users can change the post fixed status",
-                nameof(UpdatePostDto.Pinned)
-            );
-        }
+        currentPost.Update(
+            postDto.Title,
+            postDto.Content,
+            postDto.Thumbnail,
+            postDto.Pinned,
+            postDto.PostStatus,
+            loggedInUser
+        );
 
-        if (postPinnedChanged)
-        {
-            if (postDto.Pinned)
-            {
-                currentPost.PinPost();
-            }
-            else
-            {
-                currentPost.UnpinPost();
-            }
-        }
-
-        if (currentPost.Title != postDto.Title)
-        {
-            currentPost.SetTitle(postDto.Title);
-        }
-
-        if (currentPost.Content != postDto.Content)
-        {
-            currentPost.SetContent(postDto.Content);
-        }
-
-        if (currentPost.Thumbnail != postDto.Thumbnail)
-        {
-            currentPost.SetThumbnail(postDto.Thumbnail);
-        }
-
-        var updatedPost = await postRepository.UpdateAsync(postId, currentPost);
+        var updatedPost = await postRepository.Update(currentPost);
 
         return updatedPost;
     }

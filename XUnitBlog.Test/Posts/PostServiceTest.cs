@@ -83,13 +83,11 @@ public class PostServiceTest
         _postRepository.Setup(repository => repository.GetById(postId)).ReturnsAsync(currentPost);
 
         // Action
-        await _postService.UpdateAsync(postId, postDto, loggedInUser);
+        await _postService.Update(postId, postDto, loggedInUser);
 
         // Assert
         _postRepository.Verify(repository => repository.GetById(It.IsAny<long>()));
-        _postRepository.Verify(repository =>
-            repository.UpdateAsync(It.IsAny<long>(), It.IsAny<Post>())
-        );
+        _postRepository.Verify(repository => repository.Update(It.IsAny<Post>()));
     }
 
     [Fact]
@@ -110,56 +108,12 @@ public class PostServiceTest
         // Action
         async Task assertAction()
         {
-            await _postService.UpdateAsync(postId, postDto, loggedInUser);
+            await _postService.Update(postId, postDto, loggedInUser);
         }
 
         // Assert
         await Assert.ThrowsAsync<ArgumentException>(assertAction);
         _postRepository.Verify(repository => repository.GetById(It.IsAny<long>()));
-    }
-
-    [Fact]
-    public async Task ShouldThrowWhenNonAdminUserChangesPinnedPostStatus()
-    {
-        // Arrange
-        var loggedInUser = new GetUserDto { Role = Role.EDITOR };
-        var postId = 1;
-        var postDto = new UpdatePostDto { Title = _faker.Random.Words(2), Pinned = true };
-        var expectedPost = PostBuilder.New().Build();
-        _postRepository
-            .Setup(repository => repository.GetById(It.IsAny<long>()))
-            .ReturnsAsync(expectedPost);
-
-        // Action
-        async Task assertActionAsync()
-        {
-            await _postService.UpdateAsync(postId, postDto, loggedInUser);
-        }
-
-        await Assert.ThrowsAsync<DomainServiceException>(assertActionAsync);
-    }
-
-    [Fact]
-    public async Task ShouldThrowsWhenUpdatePostWithEmptyTitleAsync()
-    {
-        // Arrange
-        var postId = 1;
-        var postDto = new UpdatePostDto { Title = "" };
-        var loggedInUser = new GetUserDto { };
-        _postRepository
-            .Setup(repository => repository.GetById(It.IsAny<long>()))
-            .ReturnsAsync(PostBuilder.New().Build());
-
-        // Action
-        async Task assertAction()
-        {
-            await _postService.UpdateAsync(postId, postDto, loggedInUser);
-        }
-
-        // Assert
-        await Assert
-            .ThrowsAsync<DomainModelException>(assertAction)
-            .WithMessageAsync("Title is required");
     }
 
     [Fact]
