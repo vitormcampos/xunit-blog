@@ -8,36 +8,46 @@ namespace XUnitBlog.App.Pages.Auth;
 public class LoginModel(UserService userService) : PageModel
 {
     [BindProperty]
-    [Required]
-    [EmailAddress]
     public string Email { get; set; }
 
     [BindProperty]
-    [Required]
     public string Password { get; set; }
+
+    public Dictionary<string, string> Errors { get; set; } = [];
 
     public void OnGet() { }
 
-    public async Task<IActionResult> OnPost()
+    public async Task OnPostAsync()
     {
-        if (!ModelState.IsValid)
+        try
         {
-            return Page();
-        }
-
-        var token = await userService.Authenticate(Email, Password);
-
-        Response.Cookies.Append(
-            "XUnitBlog_Token",
-            token,
-            new CookieOptions
+            if (string.IsNullOrEmpty(Email))
             {
-                HttpOnly = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.UtcNow.AddHours(1),
+                throw new ArgumentException("O campo e-mail é obrigatório.");
             }
-        );
+            if (string.IsNullOrEmpty(Password))
+            {
+                throw new ArgumentException("O campo senha é obrigatório.");
+            }
 
-        return RedirectToPage("/Index");
+            var token = await userService.Authenticate(Email, Password);
+
+            Response.Cookies.Append(
+                "XUnitBlog_Token",
+                token,
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.UtcNow.AddHours(1),
+                }
+            );
+
+            Response.Redirect("/Index");
+        }
+        catch (ArgumentException e)
+        {
+            Errors.Add("Login", e.Message);
+        }
     }
 }

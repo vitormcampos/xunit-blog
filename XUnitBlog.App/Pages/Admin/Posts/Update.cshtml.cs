@@ -18,7 +18,7 @@ public class UpdateModel(PostService postService, UserService userService, FileS
     [BindProperty]
     public IFormFile? Thumbnail { get; set; }
 
-    public Dictionary<string, string> Errors { get; set; } = new();
+    public Dictionary<string, string> Errors { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync(long id)
     {
@@ -40,7 +40,7 @@ public class UpdateModel(PostService postService, UserService userService, FileS
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(long id)
+    public async Task OnPostAsync(long id)
     {
         try
         {
@@ -51,17 +51,13 @@ public class UpdateModel(PostService postService, UserService userService, FileS
             }
 
             var user = await userService.GetById(User.GetId());
-            await postService.ValidateUserCanUpdatePinnedFlag(user, UpdatePostDto, id);
+            await postService.UpdateAsync(id, UpdatePostDto, user);
 
-            await postService.UpdateAsync(id, UpdatePostDto);
-
-            return RedirectToPage("/Admin/Posts/Index");
+            Response.Redirect("/Admin/Posts/Index");
         }
-        catch (DomainServiceException e)
+        catch (ArgumentException e)
         {
-            Errors.Add(e.PropertyName, e.Message);
+            Errors.Add(nameof(UpdatePostDto), e.Message);
         }
-
-        return Page();
     }
 }

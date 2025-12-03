@@ -15,18 +15,27 @@ public class NewModel(PostService postService, FileService fileService) : PageMo
     [BindProperty]
     public IFormFile Thumbnail { get; set; }
 
+    public Dictionary<string, string> Errors { get; set; } = [];
+
     public void OnGet() { }
 
     public async Task OnPostAsync()
     {
-        if (Thumbnail is not null)
+        try
         {
-            var thumbnailPath = await fileService.UploadAsync(Thumbnail);
-            CreatePostDto.Thumbnail = thumbnailPath;
+            if (Thumbnail is not null)
+            {
+                var thumbnailPath = await fileService.UploadAsync(Thumbnail);
+                CreatePostDto.Thumbnail = thumbnailPath;
+            }
+
+            await postService.AddAsync(CreatePostDto);
+
+            Response.Redirect("/Admin/Posts");
         }
-
-        await postService.AddAsync(CreatePostDto);
-
-        Response.Redirect("/Admin/Posts");
+        catch (ArgumentException e)
+        {
+            Errors.Add(nameof(CreatePostDto), e.Message);
+        }
     }
 }
