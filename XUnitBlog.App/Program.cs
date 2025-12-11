@@ -80,6 +80,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.ConfigureDevelopmentMigrations();
+
 app.UseHttpsRedirection();
 
 app.UseRouting();
