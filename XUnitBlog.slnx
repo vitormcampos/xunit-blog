@@ -1,7 +1,10 @@
 <Solution>
   <Folder Name="/Solution Items/">
-    <File Path="docker-compose.development.yml" />
     <File Path="MakeFile" />
+  </Folder>
+  <Folder Name="/Solution Items/Docker/">
+    <File Path=".env-example" />
+    <File Path="docker-compose.development.yml" />
   </Folder>
   <Project Path="XUnitBlog.App/XUnitBlog.App.csproj" />
   <Project Path="XUnitBlog.Data/XUnitBlog.Data.csproj" />

@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Upload files
 */wwwroot/uploads
+
+# Environment variable files
+.env

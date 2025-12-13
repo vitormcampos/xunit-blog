@@ -7,15 +7,11 @@ services:
       dockerfile: XUnitBlog.App/Dockerfile
     restart: always
     ports:
-      - "2000:8080"
+      - "${APP_PORT}:8080"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: >
-        Host=db;
-        Port=5432;
-        Database=xunitblog;
-        Username=postgres;
-        Password=helloworld-xunitblog;
+      ConnectionStrings__BlogConnectionString: >
+        Host=${DB_HOST}; Port=5432; Database=${DB_NAME}; Username=${DB_USER}; Password=${DB_PASSWORD};
     volumes:
       - uploads:/app/wwwroot/uploads
     depends_on:
@@ -27,9 +23,9 @@ services:
     image: postgres:16
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: helloworld-xunitblog
-      POSTGRES_DB: xunitblog
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -38,6 +34,7 @@ services:
 volumes:
   uploads:
   pgdata:
+
 
 networks:
   app_network:
