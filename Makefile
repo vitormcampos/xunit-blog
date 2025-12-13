@@ -12,3 +12,6 @@ ef-up:
 
 ef-down:
 	dotnet ef database drop --project ${project} --startup-project ${startup-project}
+
+run:
+	dotnet run --project ${startup-project}
