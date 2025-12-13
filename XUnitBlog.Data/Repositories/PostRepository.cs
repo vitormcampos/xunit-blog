@@ -46,6 +46,7 @@ internal class PostRepository(BlogContext context) : IPostRepository
                     .SetProperty(p => p.Content, post.Content)
                     .SetProperty(p => p.Thumbnail, post.Thumbnail)
                     .SetProperty(p => p.PostStatus, post.PostStatus)
+                    .SetProperty(p => p.Pinned, post.Pinned)
             );
         await context.SaveChangesAsync();
 
