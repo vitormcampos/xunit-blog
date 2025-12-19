@@ -1,0 +1,57 @@
+﻿@page
+@using XUnitBlog.Domain.Entities
+@model XUnitBlog.App.Pages.Admin.Posts.UpdateModel
+@{
+    ViewData["Title"] = $"Editar post";
+}
+
+<div class="uk-container uk-flex uk-flex-center uk-margin-top">
+    <form method="post" enctype="multipart/form-data">
+        @foreach (var error in Model.Errors)
+        {
+            <div class="uk-alert-danger" uk-alert>
+                <a href class="uk-alert-close" uk-close></a>
+                <p><b>@error.Value</b></p>
+            </div>
+        }
+        <fieldset class="uk-fieldset">
+            <legend class="uk-legend uk-margin">@ViewData["Title"]</legend>
+            <div class="uk-child-width-1-1" uk-grid>
+                <div>
+                    <label asp-for="UpdatePostDto.Title">Titulo</label>
+                    <input class="uk-input" type="text" asp-for="UpdatePostDto.Title">
+                </div>
+                <div>
+                    <label asp-for="UpdatePostDto.Content">Conteúdo</label>
+                    <textarea class="uk-textarea" asp-for="UpdatePostDto.Content" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="uk-child-width-1-2 uk-flex-middle" uk-grid>
+                <div>
+                    <label asp-for="UpdatePostDto.PostStatus">Status</label>
+                    <select class="uk-input" type="text" asp-for="UpdatePostDto.PostStatus">
+                        <option value="@PostStatuses.Draft">Rascunho</option>
+                        <option value="@PostStatuses.Hidden">Oculto</option>
+                        <option value="@PostStatuses.Published">Publicado</option>
+                    </select>
+                </div>
+                <div>
+                    <input class="uk-checkbox" type="checkbox" asp-for="UpdatePostDto.Pinned">
+                    <label asp-for="UpdatePostDto.Pinned">Fixar ao banner</label>
+                </div>
+            </div>
+
+            <input type="hidden" asp-for="UpdatePostDto.Thumbnail">
+            <div class="uk-margin" uk-margin>
+                <div class="uk-width-1-1" uk-form-custom="target: true">
+                    <input type="file" aria-label="Selecione a foto para thumbnail" asp-for="Thumbnail">
+                    <input class="uk-input uk-width-1-1" type="text" placeholder="Selecione a foto para thumbnail"
+                        aria-label="Selecione a foto para thumbnail" disabled>
+                </div>
+            </div>
+        </fieldset>
+
+        <button class="uk-button uk-button-primary" type="submit">Salvar</button>
+    </form>
+</div>

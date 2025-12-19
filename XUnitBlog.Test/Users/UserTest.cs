@@ -108,6 +108,21 @@ public class UserTest
         Assert.Throws<DomainModelException>(assertAction);
     }
 
-    [Fact(Skip = "Implement a check to see if the password is a valid format.")]
-    public void ShouldPhotoContainsImageFormat() { }
+    [Fact]
+    public void ShouldUpdateUser()
+    {
+        // Arrange
+        var user = UserBuilder.New().Build();
+        var newFirstName = "NewFirstName";
+        var newLastName = "NewLastName";
+        var newPhoto = "image.png";
+
+        // Action
+        user.Update(newFirstName, newLastName, newPhoto);
+
+        // Assert
+        Assert.Equal(user.FirstName, newFirstName);
+        Assert.Equal(user.LastName, newLastName);
+        Assert.Equal(user.Photo, newPhoto);
+    }
 }

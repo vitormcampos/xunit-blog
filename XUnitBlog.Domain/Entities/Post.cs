@@ -1,4 +1,5 @@
-﻿using XUnitBlog.Domain.Exceptions;
+﻿using XUnitBlog.Domain.Dtos.Users;
+using XUnitBlog.Domain.Exceptions;
 
 namespace XUnitBlog.Domain.Entities;
 
@@ -11,25 +12,35 @@ public class Post
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     public PostStatuses PostStatus { get; private set; }
+    public bool Pinned { get; private set; }
     public long UserId { get; private set; }
     public User User { get; private set; }
 
     private Post() { }
 
-    public Post(string title, string content, string thumbnail, long userId)
+    public Post(
+        string title,
+        string content,
+        string thumbnail,
+        long userId,
+        bool pinned = false,
+        PostStatuses status = PostStatuses.Draft
+    )
     {
-        SetTitle(title);
-        SetContent(content);
-        SetThumbnail(thumbnail);
-        CreatedAt = DateTime.UtcNow;
-        PostStatus = PostStatuses.Draft;
-
         if (userId <= 0)
         {
             throw new DomainModelException("User id is invalid");
         }
 
+        SetTitle(title);
+        SetContent(content);
+        SetThumbnail(thumbnail);
+        SetStatus(status);
+        CreatedAt = DateTime.UtcNow;
+        Pinned = pinned;
+
         UserId = userId;
+        Pinned = pinned;
     }
 
     public void SetTitle(string title)
@@ -56,5 +67,42 @@ public class Post
     {
         Thumbnail = thumbnail;
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void TogglePinned(bool pinned)
+    {
+        Pinned = pinned;
+    }
+
+    public void SetStatus(PostStatuses status) => PostStatus = status;
+
+    public void Update(
+        string title,
+        string content,
+        string thumbnail,
+        bool pinned,
+        PostStatuses status,
+        GetUserDto user
+    )
+    {
+        if (pinned != this.Pinned)
+        {
+            if (user.Role != Role.ADMIN)
+                throw new DomainModelException("Just ADMIN users can change the post fixed status");
+
+            TogglePinned(pinned);
+        }
+
+        if (Title != title)
+            SetTitle(title);
+
+        if (Content != content)
+            SetContent(content);
+
+        if (Thumbnail != thumbnail)
+            SetThumbnail(thumbnail);
+
+        if (PostStatus != status)
+            SetStatus(status);
     }
 }

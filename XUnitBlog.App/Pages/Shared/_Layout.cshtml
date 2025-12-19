@@ -44,6 +44,13 @@
                                         <a asp-page="Admin/Index" class="uk-button uk-button-secondary">Admin</a>
                                     </div>
                                 </li>
+                                <li>
+                                    <div>
+                                        <a asp-page="/Auth/Logout" class="uk-button uk-button-danger">
+                                            <span uk-icon="sign-out"></span>
+                                        </a>
+                                    </div>
+                                </li>
                             }
                             else
                             {
@@ -59,7 +66,7 @@
             </div>
         </nav>
     </header>
-    <main class="uk-container-fluid uk-padding-small uk-padding-remove-vertical">
+    <main>
         @RenderBody()
     </main>
     <footer class="uk-padding uk-flex uk-flex-between uk-flex-middle uk-light uk-background-secondary">

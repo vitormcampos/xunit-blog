@@ -13,7 +13,7 @@ public class UserService(
     IJwtService jwtService
 )
 {
-    public async Task<GetUserDto> GetById(int id)
+    public async Task<GetUserDto> GetById(long id)
     {
         var user = await repository.GetUserById(id);
 
@@ -49,27 +49,12 @@ public class UserService(
     public async Task<User> UpdateAsync(int userId, UpdateUserDto userDto)
     {
         var user = await repository.GetUserById(userId);
-
         if (user is null)
         {
-            throw new DomainServiceException("Usuário não encontrado");
+            throw new ArgumentException("Usuário não encontrado");
         }
 
-        if (userDto.FirstName != user.FirstName)
-        {
-            user.SetFirstName(userDto.FirstName);
-        }
-
-        if (userDto.LastName != user.LastName)
-        {
-            user.SetLastName(userDto.LastName);
-        }
-
-        if (userDto.Photo != user.Photo)
-        {
-            user.SetPhoto(userDto.Photo);
-        }
-
+        user.Update(userDto.FirstName, userDto.LastName, userDto.Photo);
         await repository.UpdateAsync(user);
 
         return user;

@@ -1,9 +1,18 @@
 ﻿@page
 @model XUnitBlog.App.Pages.Auth.LoginModel
 
-<div class="uk-container uk-flex uk-flex-center uk-margin-large-top">
+<div class="uk-container uk-flex uk-flex-center uk-flex-middle" style="min-height: 85dvh;">
     <form method="post">
         <h2>Acessar sua conta</h2>
+
+        @foreach (var error in Model.Errors)
+        {
+            <div class="uk-alert-danger" uk-alert>
+                <a href class="uk-alert-close" uk-close></a>
+                <p><b>@error.Value</b></p>
+            </div>
+        }
+
         <div class="uk-margin">
             <div class="uk-inline">
                 <span class="uk-form-icon" uk-icon="icon: user"></span>

@@ -22,22 +22,34 @@ internal class PostRepository(BlogContext context) : IPostRepository
         return await context.Posts.Where(p => p.UserId == userId).AsNoTracking().ToListAsync();
     }
 
-    public async Task<Post> GetById(long id)
+    public async Task<IList<Post>> GetAllPinnedPosts()
     {
-        return await context.Posts.FirstOrDefaultAsync(p => p.Id == id);
+        return await context
+            .Posts.Where(p => p.Pinned && p.PostStatus == PostStatuses.Published)
+            .AsNoTracking()
+            .Take(4)
+            .ToListAsync();
     }
 
-    public async Task UpdateAsync(long postId, Post post)
+    public async Task<Post?> GetById(long id)
+    {
+        return await context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<Post> Update(Post post)
     {
         await context
-            .Posts.Where(p => p.Id == postId)
+            .Posts.Where(p => p.Id == post.Id)
             .ExecuteUpdateAsync(setters =>
                 setters
                     .SetProperty(p => p.Title, post.Title)
                     .SetProperty(p => p.Content, post.Content)
                     .SetProperty(p => p.Thumbnail, post.Thumbnail)
                     .SetProperty(p => p.PostStatus, post.PostStatus)
+                    .SetProperty(p => p.Pinned, post.Pinned)
             );
         await context.SaveChangesAsync();
+
+        return await context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == post.Id);
     }
 }

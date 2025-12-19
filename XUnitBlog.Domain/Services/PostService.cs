@@ -1,5 +1,8 @@
-﻿using XUnitBlog.Domain.Dtos.Posts;
+﻿using Microsoft.Extensions.Hosting;
+using XUnitBlog.Domain.Dtos.Posts;
+using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Entities;
+using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Domain.Repositories;
 
 namespace XUnitBlog.Domain.Services;
@@ -23,17 +26,37 @@ public class PostService(IPostRepository postRepository)
         return await postRepository.GetAllByUser(userId);
     }
 
-    public async Task UpdateAsync(long postId, UpdatePostDto postDto)
+    public async Task<IList<Post>> GetAllPinnedPosts()
+    {
+        var posts = await postRepository.GetAllPinnedPosts();
+
+        return posts ?? [];
+    }
+
+    public async Task<Post> GetById(long postId)
+    {
+        return await postRepository.GetById(postId);
+    }
+
+    public async Task<Post> Update(long postId, UpdatePostDto postDto, GetUserDto loggedInUser)
     {
         var currentPost = await postRepository.GetById(postId);
-
         if (currentPost is null)
         {
-            throw new InvalidOperationException();
+            throw new ArgumentException("Post not found");
         }
 
-        var post = postDto.MapToPost(currentPost.UserId);
+        currentPost.Update(
+            postDto.Title,
+            postDto.Content,
+            postDto.Thumbnail,
+            postDto.Pinned,
+            postDto.PostStatus,
+            loggedInUser
+        );
 
-        await postRepository.UpdateAsync(postId, post);
+        var updatedPost = await postRepository.Update(currentPost);
+
+        return updatedPost;
     }
 }

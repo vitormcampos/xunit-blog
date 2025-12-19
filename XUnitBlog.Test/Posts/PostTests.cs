@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using XUnitBlog.Domain.Dtos.Users;
 using XUnitBlog.Domain.Exceptions;
 using XUnitBlog.Test._Builders;
 using XUnitBlog.Test.Extensions;
@@ -81,7 +82,7 @@ public class PostTests
     [Theory]
     [InlineData("")]
     [InlineData(null)]
-    public void ShouldThrowIfChangeTitleWithInvalidValue(string title)
+    public void ShouldThrowWhenSetTitleIsInvalid(string title)
     {
         // Arrange
         var post = PostBuilder.New().Build();
@@ -109,5 +110,97 @@ public class PostTests
 
         // Assert
         Assert.NotEqual(postUpdatedAtBeforeChanged, post.UpdatedAt);
+    }
+
+    [Fact]
+    public void ShouldCreatePinnedPost()
+    {
+        // Action
+        var post = PostBuilder.New().IsPinned(true).Build();
+
+        // Assert
+        Assert.True(post.Pinned);
+    }
+
+    [Fact]
+    public void ShouldPinAnExistingPost()
+    {
+        // Arrange
+        var post = PostBuilder.New().IsPinned(false).Build();
+
+        // Action
+        post.TogglePinned(true);
+
+        // Assert
+        Assert.True(post.Pinned);
+    }
+
+    [Fact]
+    public void ShouldUpdatePostStatus()
+    {
+        // Arange
+        var post = PostBuilder.New().Build();
+        var expectedStatus = Domain.Entities.PostStatuses.Published;
+
+        // Action
+        post.SetStatus(Domain.Entities.PostStatuses.Published);
+
+        // Assert
+        Assert.Equal(expectedStatus, post.PostStatus);
+    }
+
+    [Fact]
+    public void ShouldUpdatePost()
+    {
+        // Arrange
+        var post = PostBuilder.New().Build();
+        var newTitle = _faker.Lorem.Sentence();
+        var newContent = _faker.Lorem.Paragraph();
+        var newThumbnail = _faker.Image.PicsumUrl();
+        var newPinnedStatus = false;
+        var postStatus = Domain.Entities.PostStatuses.Draft;
+        var user = new GetUserDto
+        {
+            Id = post.UserId,
+            FirstName = _faker.Name.FullName(),
+            Email = _faker.Internet.Email(),
+        };
+
+        // Action
+        post.Update(newTitle, newContent, newThumbnail, newPinnedStatus, postStatus, user);
+
+        // Assert
+        Assert.Equal(newTitle, post.Title);
+        Assert.Equal(newContent, post.Content);
+        Assert.Equal(newThumbnail, post.Thumbnail);
+    }
+
+    [Fact]
+    public void ShouldThrowWhenUpdatingPostPinnedStatusByUnauthorizedUser()
+    {
+        // Arrange
+        var post = PostBuilder.New().IsPinned(false).Build();
+        var newTitle = _faker.Lorem.Sentence();
+        var newContent = _faker.Lorem.Paragraph();
+        var newThumbnail = _faker.Image.PicsumUrl();
+        var newPinnedStatus = true;
+        var postStatus = Domain.Entities.PostStatuses.Published;
+        var user = new GetUserDto
+        {
+            FirstName = _faker.Name.FullName(),
+            Email = _faker.Internet.Email(),
+            Role = Domain.Entities.Role.EDITOR, // invalid role to pin
+        };
+
+        // Action
+        void assertAction()
+        {
+            post.Update(newTitle, newContent, newThumbnail, newPinnedStatus, postStatus, user);
+        }
+
+        // Assert
+        Assert
+            .Throws<DomainModelException>(assertAction)
+            .WithMessage("Just ADMIN users can change the post fixed status");
     }
 }

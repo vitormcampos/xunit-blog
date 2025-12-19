@@ -6,7 +6,7 @@
 
 <div class="uk-container uk-margin">
 
-    <h2>Usuários</h2>
+    <h2>@ViewData["Title"]</h2>
 
     <table class="uk-table uk-table-hover uk-table-divider">
         <thead>
@@ -27,7 +27,7 @@
                     <td>@post.PostStatus</td>
                     <td>@post.UpdatedAt</td>
                     <td>
-                        <a asp-page="/Admin/Users/Update" asp-route-id="@post.Id" class="uk-button ">Editar</a>
+                        <a asp-page="/Admin/Posts/Update" asp-route-id="@post.Id" class="uk-button ">Editar</a>
                     </td>
                 </tr>
             }

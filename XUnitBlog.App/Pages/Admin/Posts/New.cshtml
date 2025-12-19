@@ -7,6 +7,13 @@
 
 <div class="uk-container uk-flex uk-flex-center uk-margin-top">
     <form method="post" enctype="multipart/form-data">
+        @foreach (var error in Model.Errors)
+        {
+            <div class="uk-alert-danger" uk-alert>
+                <a href class="uk-alert-close" uk-close></a>
+                <p><b>@error.Value</b></p>
+            </div>
+        }
         <input type="hidden" asp-for="CreatePostDto.UserId" value="@User.GetId()">
         <fieldset class="uk-fieldset">
             <legend class="uk-legend uk-margin">@ViewData["Title"]</legend>
