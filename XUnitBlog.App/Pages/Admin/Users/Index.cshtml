@@ -1,35 +1,46 @@
 ﻿@page
 @model XUnitBlog.App.Pages.Admin.Users.IndexModel
 @{
-    ViewData["Title"] = "Listagem de usuários";
+    ViewData["Title"] = "Usuários";
 }
 
 <div class="uk-container uk-margin">
 
-    <h2>Usuários</h2>
+    <div class="uk-card uk-card-default uk-card-body uk-margin">
+        <div uk-grid>
+            <div class="uk-width-expand">
+                <h2 class="uk-card-title">@ViewData["Title"]</h2>
+            </div>
+            <div class="uk-width-auto">
+                <a asp-page="/Admin/Users/New" class="uk-button uk-button-primary">
+                    <span uk-icon="plus"></span> Novo usuário
+                </a>
+            </div>
+        </div>
 
-    <table class="uk-table uk-table-hover uk-table-divider">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Email</th>
-                <th>Username</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model.Users)
-            {
+        <table class="uk-table uk-table-hover uk-table-divider">
+            <thead>
                 <tr>
-                    <td>@user.Id</td>
-                    <td>@user.Email</td>
-                    <td>@user.UserName</td>
-                    <td>
-                        <a asp-page="/Admin/Users/Update" asp-route-id="@user.Id" class="uk-button ">Editar</a>
-                    </td>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th class="uk-text-right">Ações</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Email</td>
+                        <td>@user.UserName</td>
+                        <td class="uk-text-right">
+                            <a asp-page="/Admin/Users/Update" asp-route-id="@user.Id" class="uk-button uk-button-default uk-button-small">Editar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
 </div>

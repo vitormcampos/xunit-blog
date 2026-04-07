@@ -3,6 +3,7 @@
 @using XUnitBlog.Domain.Entities
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,54 +12,73 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/XUnitBlog.App.styles.css" asp-append-version="true" />
 
+
+    @await RenderSectionAsync("Styles", required: false)
+
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/css/uikit.min.css" />
 
     <!-- AlpineJS -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
+
 <body>
-    <div class="uk-container-expand" uk-grid>
-        <div class="uk-width-1-5">
-            <ul class="uk-nav-default uk-padding" uk-nav="multiple: true" style="font-size: 18px">
-                <li class="uk-active">
-                    <a href="/">
-                        <span uk-icon="reply"></span>
-                        Voltar para Blog
-                    </a>
-                </li>
-                @if (User.RoleIsAdmin())
-                {
+    <div class="uk-flex uk-height-viewport">
+        <aside class="uk-width-medium uk-background-muted uk-flex uk-flex-column">
+            <div class="uk-padding uk-padding-remove-bottom">
+                <a href="/" class="uk-button uk-button-default uk-width-1-1">
+                    <span uk-icon="reply"></span> Voltar ao Blog
+                </a>
+            </div>
+
+            <hr class="uk-margin-remove">
+
+            <nav class="uk-flex-1">
+                <ul class="uk-nav uk-nav-default" uk-nav>
+                    @if (User.RoleIsAdmin())
+                    {
+                        <li class="uk-parent">
+                            <a asp-page="/Admin/Users">
+                                <span uk-icon="user"></span> Usuários
+                            </a>
+                            <ul class="uk-nav-sub">
+                                <li><a asp-page="/Admin/Users/Index">Todos</a></li>
+                                <li><a asp-page="/Admin/Users/New">Novo</a></li>
+                            </ul>
+                        </li>
+                    }
                     <li class="uk-parent">
-                        <a asp-page="/Admin/Users">
-                            <span uk-icon="users"></span>
-                            Usuários
-                            <span uk-nav-parent-icon></span>
+                        <a asp-page="/Admin/Posts">
+                            <span uk-icon="file-edit"></span> Posts
                         </a>
                         <ul class="uk-nav-sub">
-                            <li><a asp-page="/Admin/Users/Index">Todos</a></li>
-                            <li><a asp-page="/Admin/Users/New">Novo</a></li>
+                            <li><a asp-page="/Admin/Posts/Index">Todos</a></li>
+                            <li><a asp-page="/Admin/Posts/New">Novo</a></li>
                         </ul>
                     </li>
-                }
-                <li class="uk-parent">
-                    <a asp-page="/Admin/Posts">
-                        <span uk-icon="copy"></span>
-                        Posts
-                        <span uk-nav-parent-icon></span>
-                    </a>
-                    <ul class="uk-nav-sub">
-                        <li><a asp-page="/Admin/Posts/Index">Todos</a></li>
-                        <li><a asp-page="/Admin/Posts/New">Novo</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-        <div class="uk-width-expand uk-padding-large" style="height: 100dvh">
-            <div>
+                </ul>
+            </nav>
+
+            <div class="uk-padding-small uk-background-default">
+                <div class="uk-flex uk-flex-middle" uk-grid>
+                    <div class="uk-width-expand">
+                        <span class="uk-text-small uk-text-muted">@User.Identity?.Name</span>
+                    </div>
+                    <div>
+                        <form asp-page="/Auth/Logout" asp-route-returnUrl="/" method="post">
+                            <button type="submit" class="uk-button uk-button-danger uk-button-small"
+                                    uk-icon="sign-out">Sair</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="uk-flex-1 uk-background-white">
+            <div class="uk-padding-large">
                 @RenderBody()
             </div>
-        </div>
+        </main>
     </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -69,4 +89,5 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

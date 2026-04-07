@@ -17,15 +17,10 @@ public static class AddDatabaseConfiguration
         });
     }
 
-    public static void ConfigureDevelopmentMigrations(this WebApplication app)
+    public static void ApplyMigrations(this WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
-            using (var scope = app.Services.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
-                dbContext.Database.Migrate();
-            }
-        }
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<BlogContext>();
+        dbContext.Database.Migrate();
     }
 }

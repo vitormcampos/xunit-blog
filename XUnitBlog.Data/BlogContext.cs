@@ -4,7 +4,7 @@ using XUnitBlog.Domain.Entities;
 
 namespace XUnitBlog.Data;
 
-internal class BlogContext : DbContext
+public class BlogContext : DbContext
 {
     public BlogContext(DbContextOptions options)
         : base(options) { }

@@ -56,10 +56,12 @@
             </div>
             <div>
                 <h4 class="uk-text-bold uk-margin-remove">@post.Title</h4>
-                <p class="uk-text-small uk-margin-remove">@post.UpdatedAt.ToString("d/MM/yyyy")</p>
+                <p class="uk-text-small uk-margin-remove">@post.UpdatedAt.ToString("dd/MM/yyyy")</p>
             </div>
             <div>
-                <p class="uk-text-small">@(post.Content.Length > 200 ? post.Content.Substring(0, 200) + "..." : post.Content)</p>
+                <p class="uk-text-small">@Html.Raw(post.Content.Length > 200 ? post.Content.Substring(0, 200) + "..." :
+                                                                                                post.Content)
+                </p>
             </div>
             
         </div>

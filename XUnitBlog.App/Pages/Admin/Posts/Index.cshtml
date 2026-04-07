@@ -1,37 +1,48 @@
 ﻿@page
 @model XUnitBlog.App.Pages.Admin.Posts.IndexModel
 @{
-    ViewData["Title"] = "Listagem de posts";
+    ViewData["Title"] = "Posts";
 }
 
 <div class="uk-container uk-margin">
 
-    <h2>@ViewData["Title"]</h2>
+    <div class="uk-card uk-card-default uk-card-body uk-margin">
+        <div uk-grid>
+            <div class="uk-width-expand">
+                <h2 class="uk-card-title">@ViewData["Title"]</h2>
+            </div>
+            <div class="uk-width-auto">
+                <a asp-page="/Admin/Posts/New" class="uk-button uk-button-primary">
+                    <span uk-icon="plus"></span> Novo post
+                </a>
+            </div>
+        </div>
 
-    <table class="uk-table uk-table-hover uk-table-divider">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Titulo</th>
-                <th>Status</th>
-                <th>Atualizado em</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var post in Model.Posts)
-            {
+        <table class="uk-table uk-table-hover uk-table-divider">
+            <thead>
                 <tr>
-                    <td>@post.Id</td>
-                    <td>@post.Title</td>
-                    <td>@post.PostStatus</td>
-                    <td>@post.UpdatedAt</td>
-                    <td>
-                        <a asp-page="/Admin/Posts/Update" asp-route-id="@post.Id" class="uk-button ">Editar</a>
-                    </td>
+                    <th>Id</th>
+                    <th>Titulo</th>
+                    <th>Status</th>
+                    <th>Atualizado em</th>
+                    <th class="uk-text-right">Ações</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var post in Model.Posts)
+                {
+                    <tr>
+                        <td>@post.Id</td>
+                        <td>@post.Title</td>
+                        <td>@post.PostStatus</td>
+                        <td>@post.UpdatedAt</td>
+                        <td class="uk-text-right">
+                            <a asp-page="/Admin/Posts/Update" asp-route-id="@post.Id" class="uk-button uk-button-default uk-button-small">Editar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
 </div>

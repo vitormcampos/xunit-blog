@@ -15,3 +15,6 @@ ef-down:
 
 run:
 	dotnet run --project ${startup-project}
+
+watch:
+	dotnet watch --project ${startup-project} run

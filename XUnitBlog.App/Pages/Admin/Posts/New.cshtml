@@ -5,8 +5,12 @@
     ViewData["Title"] = "Novo Post";
 }
 
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+}
+
 <div class="uk-container uk-flex uk-flex-center uk-margin-top">
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" id="postForm">
         @foreach (var error in Model.Errors)
         {
             <div class="uk-alert-danger" uk-alert>
@@ -14,29 +18,60 @@
                 <p><b>@error.Value</b></p>
             </div>
         }
-        <input type="hidden" asp-for="CreatePostDto.UserId" value="@User.GetId()">
+        <input type="hidden" asp-for="CreatePostDto.UserId" value="@User.GetId()" />
+        <input type="hidden" asp-for="CreatePostDto.Content" id="Content" />
         <fieldset class="uk-fieldset">
             <legend class="uk-legend uk-margin">@ViewData["Title"]</legend>
             <div class="uk-child-width-1-1" uk-grid>
                 <div>
                     <label asp-for="CreatePostDto.Title">Titulo</label>
-                    <input class="uk-input" type="text" asp-for="CreatePostDto.Title">
+                    <input class="uk-input" type="text" asp-for="CreatePostDto.Title" />
                 </div>
                 <div>
-                    <label asp-for="CreatePostDto.Content">Conteúdo</label>
-                    <textarea class="uk-textarea" asp-for="CreatePostDto.Content" rows="3"></textarea>
+                    <label>Conteúdo</label>
+                    <div id="editor" style="height: 300px;"></div>
                 </div>
             </div>
 
             <div class="uk-margin" uk-margin>
                 <div class="uk-width-1-1" uk-form-custom="target: true">
-                    <input type="file" aria-label="Selecione a foto para thumbnail" asp-for="Thumbnail">
-                    <input class="uk-input uk-width-1-1" type="text"
-                           placeholder="Selecione a foto para thumbnail" aria-label="Selecione a foto para thumbnail" disabled>
+                    <input type="file" aria-label="Selecione a foto para thumbnail" asp-for="Thumbnail" />
+                    <input class="uk-input uk-width-1-1" type="text" placeholder="Selecione a foto para thumbnail"
+                           aria-label="Selecione a foto para thumbnail" disabled />
                 </div>
+            </div>
+
+            <div class="uk-margin">
+                <label>
+                    <input class="uk-checkbox" type="checkbox" asp-for="CreatePostDto.Pinned" /> Post fixado
+                </label>
             </div>
         </fieldset>
 
         <button class="uk-button uk-button-primary" type="submit">Criar</button>
     </form>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script>
+        var quill = new Quill('#editor', {
+        theme: 'snow',
+        placeholder: 'Escreva o conteúdo do post...',
+        modules: {
+        toolbar: [
+        [{ 'header': [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['link', 'image'],
+        ['clean']
+        ]
+        }
+        });
+
+        document.getElementById('postForm').addEventListener('submit', function () {
+        document.getElementById('Content').value = quill.root.innerHTML;
+        });
+    </script>
+}

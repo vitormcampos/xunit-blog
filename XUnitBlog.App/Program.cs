@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using XUnitBlog.Data.Ioc;
+using XUnitBlog.Data.Seeds;
 using XUnitBlog.Domain.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,7 +81,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.ConfigureDevelopmentMigrations();
+app.ApplyMigrations();
+
+app.CreateAdminUserSeed();
 
 app.UseHttpsRedirection();
 
